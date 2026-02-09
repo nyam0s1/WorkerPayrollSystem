@@ -1,10 +1,8 @@
-Here is the text for your **Worker Payroll System** README.
-
 # 💸 Worker Payroll System
 
 ### Automated Wage Processing for Casual Laborers
 
-> **The Worker Payroll System** is a dynamic single-page application (SPA) built with **Blazor Interactive Server**. It eliminates manual wage calculations by automating salary computation based on hourly rates and tracked hours.
+**The Worker Payroll System** is a dynamic single-page application (SPA) built with **Blazor Interactive Server**. It eliminates manual wage calculations by automating salary computation based on hourly rates and tracked hours.
 
 ---
 
