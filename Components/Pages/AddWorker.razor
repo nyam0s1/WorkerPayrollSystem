@@ -1,0 +1,69 @@
+﻿@page "/add"
+@page "/edit/{Id:guid}"
+@rendermode InteractiveServer
+@using Blazor_Training.Data
+@inject WorkerService Service
+@inject NavigationManager NavManager
+
+<nav class="navbar">
+	<div class="logo">PayRoll System</div>
+	<div class="nav-links">
+		<NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
+		<NavLink href="About">About</NavLink>
+	</div>
+</nav>
+<div class="main-layout">
+	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
+	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
+		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
+		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+	</nav>
+
+	<div class="InputForm">
+		<h1>New Worker</h1>
+		<div>
+			<label>Name</label><br />
+			<input type="text" placeholder="Enter Worker name" @bind="newWorker.Name">
+		</div>
+		<div>
+			<label>Rate of Pay per Hour</label><br />
+			<input type="number" placeholder="Enter Worker payrate" @bind="newWorker.hourlyPay">
+		</div>
+		<div>
+			<label>Number of Hours Worked</label><br />
+			<input type="number" placeholder="Enter Worked Hours" @bind="newWorker.hoursWorked">
+		</div>
+		<button class="btn btn-blue" @onclick="SaveWorker">Submit</button>
+		<button class="btn btn-red" @onclick="Cancel">Cancel</button>
+	</div>
+</div>
+
+@code
+{
+	bool sidebarVisible = true;
+	[Parameter]
+	public Guid Id { get; set; }
+	Worker newWorker = new Worker();
+	protected override void OnInitialized()
+	{
+		if (Id != Guid.Empty)
+		{
+			var foundWorker = Service.GetWorker(Id);
+
+			newWorker = foundWorker;
+		}
+	}
+	void SaveWorker()
+	{
+		if (Id == Guid.Empty)
+		{
+			Service.AddWorker(newWorker);
+		}
+		NavManager.NavigateTo("/workers");
+	}
+
+	void Cancel()
+	{
+		NavManager.NavigateTo("/workers");
+	}
+}

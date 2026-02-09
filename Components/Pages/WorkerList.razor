@@ -1,0 +1,69 @@
+﻿@page "/workers"
+@rendermode InteractiveServer
+@using Blazor_Training.Data
+@inject WorkerService Service
+
+<nav class="navbar">
+	<div class="logo">PayRoll System</div>
+	<div class="nav-links">
+		<NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
+		<NavLink href="About">About</NavLink>
+	</div>
+</nav>
+
+<div class="main-layout">
+	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
+	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
+		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
+		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+	</nav>
+	<div class="main-content">
+		<h1>Workers Details</h1>
+		<div class="table">
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Hourly Pay</th>
+						<th>Hours Worked</th>
+						<th>Total Salary</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (Worker w in myWorkers)
+					{
+						<tr>
+							<td>@w.Name</td>
+							<td>@w.hourlyPay</td>
+							<td>@w.hoursWorked</td>
+							<td>@w.totalSalary</td>
+							<td>
+								<a href="edit/@w.Id" class="btn btn-pink">🖋️</a>
+								<button class="btn btn-pink" @onclick="() => DeleteWorker(w)">🗑️</button>
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+@code
+{
+	bool sidebarVisible = true;
+	List<Worker> myWorkers = new List<Worker>();
+
+	protected override void OnInitialized()
+	{
+		myWorkers = Service.GetAllWorkers();
+	}
+
+	void DeleteWorker(Worker worker)
+	{
+		Service.DeleteWorker(worker);
+
+		myWorkers = Service.GetAllWorkers();
+	}
+}

@@ -1,0 +1,337 @@
+body {
+    font-family: Century Schoolbook, sans-serif;
+    background-color: #ddeee7;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='%23f4f7f6' fill-opacity='0.22'%3E%3Cpath fill-rule='evenodd' d='M29.42 29.41c.36-.36.58-.85.58-1.4V0h-4v26H0v4h28c.55 0 1.05-.22 1.41-.58h.01zm0 29.18c.36.36.58.86.58 1.4V88h-4V62H0v-4h28c.56 0 1.05.22 1.41.58zm29.16 0c-.36.36-.58.85-.58 1.4V88h4V62h26v-4H60c-.55 0-1.05.22-1.41.58h-.01zM62 26V0h-4v28c0 .55.22 1.05.58 1.41.37.37.86.59 1.41.59H88v-4H62zM18 36c0-1.1.9-2 2-2h10a2 2 0 1 1 0 4H20a2 2 0 0 1-2-2zm0 16c0-1.1.9-2 2-2h10a2 2 0 1 1 0 4H20a2 2 0 0 1-2-2zm16-26a2 2 0 0 1 2-2 2 2 0 0 1 2 2v4a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-4zm16 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2v4a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-4zM34 58a2 2 0 0 1 2-2 2 2 0 0 1 2 2v4a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-4zm16 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2v4a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-4zM34 78a2 2 0 0 1 2-2 2 2 0 0 1 2 2v6a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-6zm16 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2v6a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-6zM34 4a2 2 0 0 1 2-2 2 2 0 0 1 2 2v6a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4zm16 0a2 2 0 0 1 2-2 2 2 0 0 1 2 2v6a2 2 0 0 1-2 2 2 2 0 0 1-2-2V4zm-8 82a2 2 0 1 1 4 0v2h-4v-2zm0-68a2 2 0 1 1 4 0v10a2 2 0 1 1-4 0V18zM66 4a2 2 0 1 1 4 0v8a2 2 0 1 1-4 0V4zm0 72a2 2 0 1 1 4 0v8a2 2 0 1 1-4 0v-8zm-48 0a2 2 0 1 1 4 0v8a2 2 0 1 1-4 0v-8zm0-72a2 2 0 1 1 4 0v8a2 2 0 1 1-4 0V4zm24-4h4v2a2 2 0 1 1-4 0V0zm0 60a2 2 0 1 1 4 0v10a2 2 0 1 1-4 0V60zm14-24c0-1.1.9-2 2-2h10a2 2 0 1 1 0 4H58a2 2 0 0 1-2-2zm0 16c0-1.1.9-2 2-2h10a2 2 0 1 1 0 4H58a2 2 0 0 1-2-2zm-28-6a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm8 26a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm16 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM36 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm16 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm-8-8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 68a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm16-34a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm16-12a2 2 0 1 0 0 4 6 6 0 1 1 0 12 2 2 0 1 0 0 4 10 10 0 1 0 0-20zm-64 0a2 2 0 1 1 0 4 6 6 0 1 0 0 12 2 2 0 1 1 0 4 10 10 0 1 1 0-20zm56-12a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0 48a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm-48 0a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0-48a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm24 32a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm0-4a6 6 0 1 0 0-12 6 6 0 0 0 0 12zm36-36a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM10 44c0-1.1.9-2 2-2h8a2 2 0 1 1 0 4h-8a2 2 0 0 1-2-2zm56 0c0-1.1.9-2 2-2h8a2 2 0 1 1 0 4h-8a2 2 0 0 1-2-2zm8 24c0-1.1.9-2 2-2h8a2 2 0 1 1 0 4h-8a2 2 0 0 1-2-2zM3 68c0-1.1.9-2 2-2h8a2 2 0 1 1 0 4H5a2 2 0 0 1-2-2zm0-48c0-1.1.9-2 2-2h8a2 2 0 1 1 0 4H5a2 2 0 0 1-2-2zm71 0c0-1.1.9-2 2-2h8a2 2 0 1 1 0 4h-8a2 2 0 0 1-2-2zm6 66a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM8 86a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm0-68A6 6 0 1 1 8 2a6 6 0 0 1 0 12zm0-4a2 2 0 1 0 0-4 2 2 0 0 0 0 4zm36 36a2 2 0 1 0 0-4 2 2 0 0 0 0 4z'/%3E%3C/g%3E%3C/svg%3E");
+    background-attachment: scroll;
+    margin: 0px;
+}
+
+main {
+    padding: 25px;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+h1 {
+    color: darkblue;
+    text-align: center;
+}
+
+h3 {
+    padding-top: 20px;
+    text-align: center;
+}
+
+input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: sans-serif;
+    /* Buttons look better with simple fonts */
+}
+
+/* 2. Blue Skin */
+.btn-blue {
+    background-color: darkblue;
+    color: white;
+    transition: 0.3s ease;
+}
+
+    .btn-blue.active {
+        background-color: whitesmoke;
+        color: darkgreen;
+        transform: scale(1.05);
+    }
+
+/* 3. Red Skin */
+.btn-red {
+    background-color: crimson;
+    color: white;
+}
+
+.btn-pink {
+    background-color: papayawhip;
+    color: white;
+}
+
+/* --- NAVIGATION BAR --- */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 2000;
+    background-color: teal;
+    color: #f4f7f6;
+    padding: 15px;
+    display: flex;
+    /* Turn on Flexbox */
+    justify-content: space-between;
+    /* Push items to opposite edges */
+    align-items: center;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    /* Removes the underline */
+    margin-left: 20px;
+    /* Space between links */
+}
+
+/*sidebar settings*/
+.main-layout {
+    display: flex;
+    height: fit-content;
+}
+
+.sidebar {
+    width: 200px;
+    color: white;
+    padding: 20px;
+    background-color: teal;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100vh; /* 1. Force sidebar to be as tall as the screen */
+    position: sticky; /* 2. Tell it to stick */
+    top: 60px;
+    padding-top: 60px;
+}
+
+table {
+    border-collapse: collapse;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    background-color: white;
+}
+
+th,
+td {
+    border-right: 1px solid black;
+    padding: 8px;
+    text-align: left;
+}
+
+    th:first-child, td:first-child {
+        border-left: 1px solid black;
+    }
+
+th {
+    background-color: darkblue;
+    color: white;
+}
+
+.card {
+    width: 300px;
+    border: 1px solid grey;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    margin: 20px auto;
+    background-color: whitesmoke;
+    padding: 20px 20px;
+}
+
+    .card img {
+        width: 100%;
+        height: auto;
+    }
+
+@media (max-width : 768px) {
+    .main-layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        flex-direction: column;
+        position: fixed;
+        width: 90%;
+        /* Stretch across the screen */
+        padding: 10px;
+        height: 100vh;
+        top: 60px;
+        left: 0;
+        z-index: 900;
+    }
+
+    .card {
+        width: 90%;
+    }
+}
+
+.InputForm {
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    background-color: #e1f1ea;
+    text-align: center;
+    height: auto;
+    min-height: 400px;
+    margin: 20px auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebarToggle {
+    position: absolute;
+    top: 60px;
+    left: 10px;
+    z-index: 1000;
+    background: none;
+    border: none;
+    font-size: 30px;
+    cursor: pointer;
+    color: darkgray;
+}
+
+.sidebar.collapse {
+    width: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+
+.buttons {
+    justify-content: center;
+    display: flex;
+    gap: 40px;
+    margin-top: 50px;
+    flex-wrap: wrap;
+}
+
+.Add,
+.View {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: inline-block;
+    padding: 30px 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid teal;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    color: darkblue;
+}
+
+    .Add:hover, .View:hover {
+        transform: scale(1.05);
+        transition: 0.3s ease-in-out;
+        background-color: whitesmoke;
+        cursor: pointer;
+    }
+
+/* Dashboard Stats Container */
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 100px;
+    margin-top: 50px;
+    margin-bottom: 100px;
+    flex-wrap: wrap;
+}
+
+/* The Individual Card */
+.stat-card {
+    padding: 30px;
+    border-radius: 15px;
+    width: 250px;
+    text-align: center;
+    border-top: solid teal;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        color: whitesmoke;
+    }
+
+/* The Animated Number */
+.stat-number {
+    font-size: 3rem;
+    font-weight: 900;
+    color: darkblue;
+    margin: 10px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.stat-label {
+    color: grey;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.footer {
+    /* 1. Make it sit at the bottom */
+    margin-top: auto;
+    width: 100%;
+    /* 2. Styling */
+    background: linear-gradient(to right, #333, #222); /* Dark Grey/Black */
+    color: #aaa; /* Soft Grey text */
+    padding: 20px 0;
+    font-size: 0.9rem;
+    border-top: 4px solid #ddeee7;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.footer-content {
+    /* Center it and limit width so it doesn't stretch too wide */
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between; /* Pushes text to Left and Right edges */
+    align-items: center;
+    padding: 0 20px;
+}
+
+/* Link Styling (Your Name) */
+.footer a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+    .footer a:hover {
+        color: lightgreen;
+    }
+
+/* On small phones, stack them instead of side-by-side */
+@media (max-width: 600px) {
+    .footer-content {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+}
