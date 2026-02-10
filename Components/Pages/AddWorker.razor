@@ -59,6 +59,10 @@
 		{
 			Service.AddWorker(newWorker);
 		}
+		else
+		{
+			Service.UpdateWorker(newWorker);
+		}
 		NavManager.NavigateTo("/workers");
 	}
 
