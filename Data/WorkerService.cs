@@ -19,6 +19,20 @@ namespace Blazor_Training.Data
             return _context.Workers.ToList();
         }
 
+        public List<Worker> SearchWorkers(string searchText)
+        {
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                return GetAllWorkers();
+            }
+            else
+            {
+                return _context.Workers
+                    .Where(w => w.Name.Contains(searchText))
+                    .ToList();
+            }
+        }
+
         // CREATE: Add a new worker to the DB
         public void AddWorker(Worker worker)
         {

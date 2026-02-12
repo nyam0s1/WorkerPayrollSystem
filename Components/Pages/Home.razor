@@ -1,5 +1,5 @@
 ﻿@using Blazor_Training.Data
-@inject WorkerService Service
+@inject Blazor_Training.Data.WorkerService Service
 @page "/"
 
 <nav class="navbar">
@@ -15,6 +15,7 @@
 	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
 		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
 		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
 	</nav>
 
 	<div class="main-content">
@@ -24,6 +25,11 @@
 			<NavLink class="stat-card" href="workers">
 				<span class="stat-label">Total Workers</span>
 				<span class="stat-number">@displayCount</span>
+			</NavLink>
+
+			<NavLink class="stat-card" href="overtime">
+				<span class="stat-label">Overtime Workers</span>
+				<span class="stat-number">@displayOvertime</span>
 			</NavLink>
 
 			<NavLink class="stat-card" href="workers">
@@ -48,7 +54,7 @@
 		<p>&copy; @DateTime.Now.Year <strong>PayRoll System</strong>. All rights reserved.</p>
 
 		<p>
-			Designed with ❤️ by <a href="about">Ian Obino</a>
+			Designed with ❤️ by <a href="about">Binzyy</a>
 		</p>
 	</div>
 </div>
@@ -58,6 +64,7 @@
 
 	int displayCount = 0;
 	double displaySalary = 0;
+	int displayOvertime = 0;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
 	{
@@ -72,6 +79,7 @@
 		var allWorkers = Service.GetAllWorkers();
 		int finalCount = allWorkers.Count;
 		double finalSalary = allWorkers.Sum(w => w.totalSalary);
+		int finalOvertime = allWorkers.Count(w => w.overTimeHours > 0);
 
 		for (int i = 0; i <= 50; i++)
 		{
@@ -79,6 +87,7 @@
 
 			displayCount = (int)(finalCount * percentage);
 			displaySalary = finalSalary * percentage;
+			displayOvertime = (int)(finalOvertime * percentage);
 			StateHasChanged();
 
 			await Task.Delay(20);
@@ -86,6 +95,7 @@
 
 		displayCount = finalCount;
 		displaySalary = finalSalary;
+		displayOvertime = finalOvertime;
 		StateHasChanged();
 	}
 }

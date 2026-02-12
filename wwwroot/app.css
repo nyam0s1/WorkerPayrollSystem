@@ -107,7 +107,7 @@ input {
     width: 200px;
     color: white;
     padding: 20px;
-    background-color: teal;
+    background-color: #ddeee7;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -157,7 +157,7 @@ th {
 }
 
     .card:hover {
-        transform: scale(1.2);
+        transform: scale(1.02);
         transition: 0.25s ease-in-out;
         background-color: whitesmoke;
         cursor: pointer;
@@ -322,7 +322,7 @@ th {
     padding: 0 20px;
 }
 
-/* Link Styling (Your Name) */
+/* Link Styling */
 .footer a {
     color: white;
     text-decoration: none;
@@ -342,3 +342,304 @@ th {
         text-align: center;
     }
 }
+
+/* ============================================
+   REDESIGNED ABOUT PAGE - PHOTO BACKGROUND WITH OVERLAY
+   ============================================ */
+
+/* Center the whole page content */
+.about-container {
+    max-width: 700px;
+    margin: 0 auto 20px auto;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Header Section */
+.header-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+    .header-section h3 {
+        font-size: 2rem;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+/* ============================================
+   THE CARD - PHOTO AS BACKGROUND
+   ============================================ */
+
+.dev-card {
+    position: relative; /* For absolute positioning of overlay and content */
+    border-radius: 24px; /* Very rounded corners */
+    overflow: hidden; /* Clips background image and overlay to rounded corners */
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3); /* Strong shadow for drama */
+    transition: all 0.4s ease;
+    min-height: 400px; /* Ensures card has good height */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Pushes content to bottom */
+}
+
+    .dev-card:hover {
+        transform: translateY(-8px) scale(1.02); /* Lifts and slightly grows */
+        box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    }
+
+/* ============================================
+   PHOTO WRAPPER - NOW THE BACKGROUND
+   ============================================ */
+
+.photo-wrapper {
+    position: absolute; /* Fills the entire card */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Behind overlay and content */
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Fills card without distortion */
+    display: block;
+    filter: brightness(0.7); /* Darkens the image slightly */
+}
+
+/* ============================================
+   DARK OVERLAY - GRADIENT FROM TRANSPARENT TO DARK
+   ============================================ */
+
+.dev-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient( to bottom, rgba(0, 0, 0, 0) 0%, /* Transparent at top */
+    rgba(0, 0, 0, 0.3) 40%, /* Slight darkness in middle */
+    rgba(0, 0, 0, 0.85) 100% /* Very dark at bottom */
+    );
+    z-index: 2; /* Above photo, below content */
+    pointer-events: none; /* Doesn't block clicks */
+}
+
+/* Alternative: Solid dark overlay (uncomment to use instead) */
+/*
+.dev-card::before {
+    background: rgba(0, 0, 0, 0.6);
+}
+*/
+
+/* ============================================
+   INFO WRAPPER - CONTENT LAYER
+   ============================================ */
+
+.info-wrapper {
+    position: relative; /* Above overlay */
+    z-index: 3; /* Above photo and overlay */
+    padding: 40px; /* Spacing from edges */
+    color: white; /* All text white */
+}
+
+    .info-wrapper h2 {
+        margin: 0 0 12px 0;
+        color: white; /* White text */
+        font-size: 2.5rem;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Shadow for readability */
+        letter-spacing: -0.5px; /* Slightly tighter */
+    }
+
+/* ============================================
+   ROLE BADGE - GLASS MORPHISM STYLE
+   ============================================ */
+
+.role-badge {
+    background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+    backdrop-filter: blur(10px); /* Glass effect */
+    -webkit-backdrop-filter: blur(10px); /* Safari support */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    display: inline-block;
+    width: fit-content;
+    margin-bottom: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ============================================
+   CONTACT LINKS - MINIMAL WHITE BUTTONS
+   ============================================ */
+
+.contact-links {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap; /* Wraps on smaller screens */
+}
+
+.link-item {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 12px 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3); /* Semi-transparent border */
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px; /* Space between emoji and text */
+    background: rgba(255, 255, 255, 0.1); /* Very subtle background */
+    backdrop-filter: blur(10px); /* Glass effect */
+    -webkit-backdrop-filter: blur(10px);
+}
+
+    .link-item:hover {
+        background: white; /* Solid white on hover */
+        color: #2c3e50; /* Dark text */
+        border-color: white;
+        transform: translateY(-3px); /* Lifts up */
+        box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+    }
+
+    .link-item:active {
+        transform: translateY(-1px);
+    }
+
+/* ============================================
+   PORTFOLIO BUTTON - BOLD WHITE CTA
+   ============================================ */
+
+.portfolio-btn {
+    background: white; /* White background */
+    color: #2c3e50; /* Dark text */
+    padding: 16px 32px;
+    border-radius: 14px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-align: center;
+    display: inline-block;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+    /* Hover effect - gradient sweep */
+    .portfolio-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+        transition: left 0.6s ease;
+    }
+
+    .portfolio-btn:hover::before {
+        left: 100%;
+    }
+
+    .portfolio-btn:hover {
+        transform: translateY(-3px) scale(1.05); /* Lifts and grows */
+        box-shadow: 0 12px 40px rgba(255, 255, 255, 0.4);
+    }
+
+    .portfolio-btn:active {
+        transform: translateY(-1px) scale(1.02);
+    }
+
+/* ============================================
+   RESPONSIVE - MOBILE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 600px) {
+    .about-container {
+        margin: 30px auto;
+        padding: 15px;
+    }
+
+    .header-section h3 {
+        font-size: 1.6rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
+    }
+
+    .dev-card {
+        min-height: 550px; /* Taller on mobile for more content space */
+    }
+
+    .info-wrapper {
+        padding: 30px 25px;
+    }
+
+        .info-wrapper h2 {
+            font-size: 2rem;
+        }
+
+    .role-badge {
+        font-size: 0.8rem;
+        padding: 8px 16px;
+    }
+
+    .contact-links {
+        flex-direction: column; /* Stack vertically on mobile */
+    }
+
+    .link-item {
+        width: 100%; /* Full width */
+        justify-content: center;
+        font-size: 0.9rem;
+        padding: 12px 16px;
+    }
+
+    .portfolio-btn {
+        width: 100%; /* Full width on mobile */
+        padding: 14px 28px;
+        font-size: 1rem;
+    }
+}
+
+/* ============================================
+   OPTIONAL: ANIMATED GRADIENT OVERLAY
+   Uncomment this to add a subtle animated gradient overlay
+   ============================================ */
+
+/*
+.dev-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(102, 126, 234, 0.3),
+        rgba(118, 75, 162, 0.3)
+    );
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.dev-card:hover::after {
+    opacity: 1;
+}
+*/

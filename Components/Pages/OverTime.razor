@@ -1,0 +1,104 @@
+﻿@page "/overtime"
+@using Blazor_Training.Data
+@inject WorkerService Service
+@inject IJSRuntime JsRuntime
+
+<nav class="navbar">
+	<div class="logo">PayRoll System</div>
+	<div class="nav-links">
+		<NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
+		<NavLink href="About">About</NavLink>
+	</div>
+</nav>
+<div class="main-layout">
+	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
+	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
+		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
+		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
+	</nav>
+
+	<div class="main-content">
+		<h1>Overtime Workers Details</h1>
+		@if (overtimeWorkers.Count == 0)
+		{
+			<div class="card">
+				<h3>No Overtime Detected</h3>
+				<p>All workers are within the standard 40-hour limit.</p>
+			</div>
+		}
+		else
+		{
+			<div class="table">
+				<div class="search-box">
+					<input type="text"
+						   placeholder="🔍 Search by name"
+						   @bind="searchText"
+						   @bind:event="oninput"
+						   @bind:after="PerformSearch">
+				</div>
+				<table>
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Hourly Rate</th>
+							<th>Overtime Hours</th>
+							<th>Bonus Overtime Pay</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var w in overtimeWorkers)
+						{
+							<tr>
+								<td>@w.Name</td>
+								<td>@w.hourlyPay</td>
+								<td>@w.overTimeHours hrs</td>
+								<td>@( (w.overTimeHours * w.hourlyPay.GetValueOrDefault() * 1.5).ToString("N0") )</td>
+								<td>
+									<a href="edit/@w.Id" class="btn btn-pink">🖋️</a>
+									<button class="btn btn-pink" @onclick="() => DeleteWorker(w)">🗑️</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</div>
+</div>
+
+@code {
+	bool sidebarVisible = true;
+	string searchText = "";
+
+	// We create a specific list just for this page
+	List<Worker> overtimeWorkers = new List<Worker>();
+
+	protected override void OnInitialized()
+	{
+		// 1. Get everyone
+		var allWorkers = Service.GetAllWorkers();
+
+		// 2. Filter: Keep ONLY people with Overtime > 0
+		overtimeWorkers = allWorkers.Where(w => w.overTimeHours > 0).ToList();
+	}
+
+	void PerformSearch()
+	{
+		overtimeWorkers = Service.SearchWorkers(searchText);
+	}
+
+	async Task DeleteWorker(Worker worker)
+	{
+		bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
+			$"Are you sure you want to delete {worker.Name}?");
+
+		if (!confirmed)
+			return;
+
+		Service.DeleteWorker(worker);
+
+		PerformSearch();
+	}
+}

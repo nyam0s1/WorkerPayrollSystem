@@ -2,8 +2,9 @@
 @page "/edit/{Id:guid}"
 @rendermode InteractiveServer
 @using Blazor_Training.Data
-@inject WorkerService Service
+@inject Blazor_Training.Data.WorkerService Service
 @inject NavigationManager NavManager
+@using System.ComponentModel.DataAnnotations
 
 <nav class="navbar">
 	<div class="logo">PayRoll System</div>
@@ -17,24 +18,29 @@
 	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
 		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
 		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
 	</nav>
 
 	<div class="InputForm">
 		<h1>New Worker</h1>
+		<EditForm Model="newWorker" OnValidSubmit="SaveWorker">
+			<DataAnnotationsValidator />
+			<ValidationSummary />
 		<div>
 			<label>Name</label><br />
-			<input type="text" placeholder="Enter Worker name" @bind="newWorker.Name">
+			<InputText placeholder="Enter Worker name" @bind-Value="newWorker.Name" class="form-control"/>
 		</div>
 		<div>
 			<label>Rate of Pay per Hour</label><br />
-			<input type="number" placeholder="Enter Worker payrate" @bind="newWorker.hourlyPay">
+			<InputNumber placeholder="Enter Worker payrate" @bind-Value ="newWorker.hourlyPay" class="form-control" />
 		</div>
 		<div>
 			<label>Number of Hours Worked</label><br />
-			<input type="number" placeholder="Enter Worked Hours" @bind="newWorker.hoursWorked">
+			<InputNumber placeholder="Enter Worked Hours" @bind-Value="newWorker.hoursWorked" class="form-control"/>
 		</div>
-		<button class="btn btn-blue" @onclick="SaveWorker">Submit</button>
+		<button class="btn btn-blue" >Submit</button>
 		<button class="btn btn-red" @onclick="Cancel">Cancel</button>
+		</EditForm>
 	</div>
 </div>
 

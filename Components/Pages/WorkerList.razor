@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using Blazor_Training.Data
 @inject WorkerService Service
+@inject IJSRuntime JsRuntime
 
 <nav class="navbar">
 	<div class="logo">PayRoll System</div>
@@ -16,16 +17,25 @@
 	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
 		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
 		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
 	</nav>
 	<div class="main-content">
 		<h1>Workers Details</h1>
 		<div class="table">
+			<div class="search-box">
+				<input type="text"
+					   placeholder="🔍 Search by name"
+					   @bind="searchText"
+					   @bind:event="oninput"
+					   @bind:after="PerformSearch">
+			</div>
 			<table>
 				<thead>
 					<tr>
 						<th>Name</th>
 						<th>Hourly Pay</th>
 						<th>Hours Worked</th>
+						<th>Overtime Hours</th>
 						<th>Total Salary</th>
 						<th>Actions</th>
 					</tr>
@@ -37,6 +47,9 @@
 							<td>@w.Name</td>
 							<td>@w.hourlyPay</td>
 							<td>@w.hoursWorked</td>
+							<td style="@(w.overTimeHours > 0 ? "color: red; font-weight: bold": "")">
+								@w.overTimeHours
+							</td>
 							<td>@w.totalSalary</td>
 							<td>
 								<a href="edit/@w.Id" class="btn btn-pink">🖋️</a>
@@ -53,6 +66,7 @@
 @code
 {
 	bool sidebarVisible = true;
+	string searchText = "";
 	List<Worker> myWorkers = new List<Worker>();
 
 	protected override void OnInitialized()
@@ -60,8 +74,19 @@
 		myWorkers = Service.GetAllWorkers();
 	}
 
-	void DeleteWorker(Worker worker)
+	void PerformSearch()
 	{
+		myWorkers = Service.SearchWorkers(searchText);
+	}
+
+	async Task DeleteWorker(Worker worker)
+	{
+		bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
+			$"Are you sure you want to delete {worker.Name}?");
+
+		if (!confirmed)
+			return;
+
 		Service.DeleteWorker(worker);
 
 		myWorkers = Service.GetAllWorkers();
