@@ -79,7 +79,7 @@
 	{
 		var allWorkers = Service.GetAllWorkers();
 		int finalCount = allWorkers.Count;
-		double finalSalary = allWorkers.Sum(w => w.totalSalary);
+		double finalSalary = allWorkers.Sum(w => w.NetSalary);
 		int finalOvertime = allWorkers.Count(w => w.overTimeHours > 0);
 
 		for (int i = 0; i <= 50; i++)

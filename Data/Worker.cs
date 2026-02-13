@@ -60,5 +60,14 @@ namespace Blazor_Training.Data
             }
 
         }
+        public double NetSalary
+        {
+            get
+            {
+                // Subtract 30,000 from the total salary
+                double net = totalSalary - 30000;
+                return net < 0 ? 0 : net; // Optional: prevents negative salary if pay is low
+            }
+        }
     }
 }

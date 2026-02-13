@@ -1,47 +1,97 @@
 ﻿@page "/pension"
+@using Blazor_Training.Data
+@inject WorkerService Service
+@inject IJSRuntime JsRuntime
 
 <nav class="navbar">
-	<div class="logo">PayRoll System</div>
-	<div class="nav-links">
-		<NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
-		<NavLink href="About">About</NavLink>
-	</div>
+    <div class="logo">PayRoll System</div>
+    <div class="nav-links">
+        <NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
+        <NavLink href="About">About</NavLink>
+    </div>
 </nav>
-<div class="main-layout">
-	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
-	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
-		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
-		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
-		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
-		<NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
-	</nav>
 
-	<div class="main-content">
-		<h1>Pension Deduction Details</h1>
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Total Salary</th>
-					<th>Amount Deducted</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td>
-							<a href="" class="btn btn-pink">🖋️</a>
-							<button class="btn btn-pink">🗑️</button>
-						</td>
-					</tr>
-			</tbody>
-		</table>
-	</div>
+<div class="main-layout">
+    <button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
+    <nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
+        <NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
+        <NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+        <NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
+        <NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
+    </nav>
+
+    <div class="main-content">
+        <h1>Pension Deduction Details</h1>
+
+        <div class="table">
+            <div class="search-box">
+                <input type="text"
+                       placeholder="🔍 Search by name"
+                       @bind="searchText"
+                       @bind:event="oninput"
+                       @bind:after="PerformSearch">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Total Salary (Gross)</th>
+                        <th>Pension Deduction</th>
+                        <th>Net Salary (Remaining)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var worker in workers)
+                    {
+                        <tr>
+                            <td>@worker.Name</td>
+                            <td>@worker.totalSalary.ToString("N0")</td>
+
+                            <td style="color: red;">- 30,000</td>
+
+                            <td style="font-weight: bold;">
+                                @worker.NetSalary.ToString("N0")
+                            </td>
+
+                            <td>
+                                <button class="btn btn-pink" @onclick="() => DeleteWorker(worker)">🗑️</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 @code {
-	bool sidebarVisible = true;
+    bool sidebarVisible = true;
+    List<Worker> workers = new List<Worker>();
+    string searchText = "";
+
+    void PerformSearch()
+    {
+        workers = Service.SearchWorkers(searchText);
+    }
+
+    protected override void OnInitialized()
+    {
+        // Load workers when page opens
+        workers = Service.GetAllWorkers();
+    }
+
+    async Task DeleteWorker(Worker worker)
+    {
+        bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
+            $"Are you sure you want to delete {worker.Name}?");
+
+        if (!confirmed)
+            return;
+
+        Service.DeleteWorker(worker);
+
+        // Refresh the list
+        workers = Service.GetAllWorkers();
+    }
 }
