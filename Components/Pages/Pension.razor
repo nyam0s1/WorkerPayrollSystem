@@ -1,0 +1,47 @@
+﻿@page "/pension"
+
+<nav class="navbar">
+	<div class="logo">PayRoll System</div>
+	<div class="nav-links">
+		<NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
+		<NavLink href="About">About</NavLink>
+	</div>
+</nav>
+<div class="main-layout">
+	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
+	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
+		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
+		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
+		<NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
+	</nav>
+
+	<div class="main-content">
+		<h1>Pension Deduction Details</h1>
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Total Salary</th>
+					<th>Amount Deducted</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>
+							<a href="" class="btn btn-pink">🖋️</a>
+							<button class="btn btn-pink">🗑️</button>
+						</td>
+					</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+
+@code {
+	bool sidebarVisible = true;
+}
