@@ -90,7 +90,7 @@
 		overtimeWorkers = Service.SearchWorkers(searchText);
 	}
 
-	async Task DeleteWorker(Worker worker)
+	async Task DeleteWorker(Employee worker)
 	{
 		bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
 			$"Are you sure you want to delete {worker.Name}?");

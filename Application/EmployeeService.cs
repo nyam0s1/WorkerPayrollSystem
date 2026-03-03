@@ -35,7 +35,7 @@ namespace Blazor_Training.Application
             }
         }
 
-        // CREATE: Add a new worker to the DB
+        // CREATE: Add a new Employee to the DB
         public void AddEmployee(Employee employee)
         {
             _context.Employees.Add(employee);
@@ -50,13 +50,13 @@ namespace Blazor_Training.Application
             _context.SaveChanges();
         }
 
-        // READ: Find a single worker by ID
+        // READ: Find a single Employee by ID
         public Employee GetEmployee(Guid Id)
         {
             return _context.Employees.FirstOrDefault(w => w.Id == Id);
         }
 
-        // DELETE: Remove a worker from the DB
+        // DELETE: Remove a Employee from the DB
         public void DeleteEmployee(Employee employee)
         {
             _context.Employees.Remove(employee);

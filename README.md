@@ -1,14 +1,14 @@
-# 💸 Worker Payroll System
+# 💸 Employee Payroll System
 
 ### Automated Wage Processing for Casual Laborers
 
-**The Worker Payroll System** is a dynamic single-page application (SPA) built with **Blazor Interactive Server**. It eliminates manual wage calculations by automating salary computation based on hourly rates and tracked hours.
+**The Employee Payroll System** is a dynamic single-page application (SPA) built with **Blazor Interactive Server**. It eliminates manual wage calculations by automating salary computation based on hourly rates and tracked hours.
 
 ---
 
 ## 📸 Application Previews
 
-### 1. Worker Management Grid
+### 1. Employee Management Grid
 
 *A responsive data table to view, edit, and delete employee records in real-time.*
 
@@ -28,7 +28,7 @@
 ### 🔄 Full CRUD Operations
 
 * **Create:** Onboarding new workers via a dedicated modal-style form.
-* **Read:** Real-time fetching of worker lists using a centralized Service.
+* **Read:** Real-time fetching of Employee lists using a centralized Service.
 * **Update:** Edit existing records with ID-based routing (`/edit/{guid}`).
 * **Delete:** Instant removal of records from the system state.
 

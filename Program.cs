@@ -19,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // "Scoped" means "Create a new connection for each user request."
 builder.Services.AddScoped<EmployeeService>();
 builder.Services.AddScoped<IPayrollCalculatorService, PayrollCalculatorService>();
+builder.Services.AddScoped<SettingsService>();
 
 var app = builder.Build();
 

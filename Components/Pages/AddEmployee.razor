@@ -19,7 +19,8 @@
 		<NavLink class="btn btn-blue" href="add">➕Add Employee</NavLink>
 		<NavLink class="btn btn-blue" href="employees">📃View Employees</NavLink>
 		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
-		<NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
+		<NavLink class="btn btn-blue" href="calculator">🖩Tax Calculator</NavLink>
+		<NavLink class="btn btn-blue" href="settings">⚙️Settings</NavLink>
 	</nav>
 
 	<div class="InputForm">
@@ -29,11 +30,11 @@
 			<ValidationSummary />
 		<div>
 			<label>Name</label><br />
-			<InputText placeholder="Enter Worker name" @bind-Value="newEmployee.Name" class="form-control"/>
+			<InputText placeholder="Enter Employee name" @bind-Value="newEmployee.Name" class="form-control"/>
 		</div>
 		<div>
 			<label>Rate of Pay per Hour</label><br />
-			<InputNumber placeholder="Enter Worker payrate" @bind-Value ="newEmployee.hourlyPay" class="form-control" />
+			<InputNumber placeholder="Enter Employee payrate" @bind-Value ="newEmployee.hourlyPay" class="form-control" />
 		</div>
 		<div>
 			<label>Number of Hours Worked</label><br />

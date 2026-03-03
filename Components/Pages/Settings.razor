@@ -1,0 +1,147 @@
+﻿@page "/settings"
+@rendermode InteractiveServer
+@using Blazor_Training.Domain
+@using Blazor_Training.Application
+@inject SettingsService SettingsService
+
+<nav class="navbar">
+    <div class="logo">PayRoll System</div>
+    <div class="nav-links">
+        <NavLink href="" MatchMatch="NavLinkMatch.All">Home</NavLink>
+        <NavLink href="About">About</NavLink>
+    </div>
+</nav>
+
+<div class="main-layout">
+    <button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
+    <nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
+        <NavLink class="btn btn-blue" href="add">➕Add Employee</NavLink>
+        <NavLink class="btn btn-blue" href="employees">📃View Employees</NavLink>
+        <NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
+        <NavLink class="btn btn-blue" href="calculator">🖩Tax Calculator</NavLink>
+        <NavLink class="btn btn-blue" href="settings">⚙️Settings</NavLink>
+    </nav>
+
+    <div class="main-content">
+        <h1>Statutory Tax Settings</h1>
+        <p style="margin-bottom: 20px;">Manage the active KRA, NSSF, and SHA rates used by the calculation engine.</p>
+
+        <div class="table" style="max-width: 800px;">
+            @if (config == null)
+            {
+                <p><em>Loading current tax laws...</em></p>
+            }
+            else
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Statutory Deduction</th>
+                            <th style="text-align: center;">Current Rate / Limit</th>
+                            <th style="text-align: center;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Personal Relief (KES)</strong></td>
+                            <td style="text-align: center;">
+                                @if (isEditing)
+                                {
+                                    <input type="number" @bind="config.PersonalRelief" class="search-box" style="width: 120px; text-align: center;" />
+                                }
+                                else
+                                {
+                                    <span>@config.PersonalRelief.ToString("N2")</span>
+                                }
+                            </td>
+                            <td rowspan="4" style="vertical-align: middle; text-align: center; border-left: 1px solid #ddd;">
+                                @if (isEditing)
+                                {
+                                    <button class="btn btn-success" style="display: block; width: 100%; margin-bottom: 10px;" @onclick="SaveChanges">💾 Save</button>
+                                    <button class="btn btn-pink" style="display: block; width: 100%;" @onclick="CancelEdit">❌ Cancel</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-blue" @onclick="StartEditing">✏️ Edit Rates</button>
+                                }
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>NSSF Upper Limit (KES)</strong></td>
+                            <td style="text-align: center;">
+                                @if (isEditing)
+                                {
+                                    <input type="number" @bind="config.NssfUpperLimit" class="search-box" style="width: 120px; text-align: center;" />
+                                }
+                                else
+                                {
+                                    <span>@config.NssfUpperLimit.ToString("N2")</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>SHA Rate (Decimal)</strong></td>
+                            <td style="text-align: center;">
+                                @if (isEditing)
+                                {
+                                    <input type="number" step="0.0001" @bind="config.ShaRate" class="search-box" style="width: 120px; text-align: center;" />
+                                }
+                                else
+                                {
+                                    <span>@config.ShaRate</span>
+                                }
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td><strong>Housing Levy (Decimal)</strong></td>
+                            <td style="text-align: center;">
+                                @if (isEditing)
+                                {
+                                    <input type="number" step="0.001" @bind="config.HousingLevy" class="search-box" style="width: 120px; text-align: center;" />
+                                }
+                                else
+                                {
+                                    <span>@config.HousingLevy</span>
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    bool sidebarVisible = true;
+    bool isEditing = false;
+    StatutoryConfig? config;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Fetch the active config from the database on page load
+        config = await SettingsService.GetCurrentConfigAsync();
+    }
+
+    private void StartEditing()
+    {
+        isEditing = true;
+    }
+
+    private async Task CancelEdit()
+    {
+        // If they hit cancel, we fetch from the database again to discard their unsaved typing
+        config = await SettingsService.GetCurrentConfigAsync();
+        isEditing = false;
+    }
+
+    private async Task SaveChanges()
+    {
+        // Save the new values to the database and return to View mode
+        await SettingsService.SaveConfigAsync(config);
+        isEditing = false;
+    }
+}
