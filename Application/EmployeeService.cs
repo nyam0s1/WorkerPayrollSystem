@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore; // Needed for database commands
+﻿using Blazor_Training.Domain;
+using Blazor_Training.Infrastructure;
+using Microsoft.EntityFrameworkCore; // Needed for database commands
 
-namespace Blazor_Training.Data
+namespace Blazor_Training.Application
 {
     public class EmployeeService
     {

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Blazor_Training.Data;
 using Blazor_Training.Components;
+using Blazor_Training.Application;
+using Blazor_Training.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

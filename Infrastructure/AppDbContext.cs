@@ -1,7 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Blazor_Training.Domain;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
-namespace Blazor_Training.Data
+namespace Blazor_Training.Infrastructure
 {
     // Inheriting from DbContext gives us the power to talk to databases
     public class AppDbContext : DbContext

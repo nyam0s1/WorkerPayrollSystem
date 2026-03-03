@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Blazor_Training.Data
+namespace Blazor_Training.Domain
 {
     /// <summary>
     /// Represents a unified Employee entity that supports both 
