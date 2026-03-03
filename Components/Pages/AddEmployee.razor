@@ -1,8 +1,8 @@
 ﻿@page "/add"
 @page "/edit/{Id:guid}"
 @rendermode InteractiveServer
-@using Blazor_Training.Data
-@inject Blazor_Training.Data.EmployeeService Service
+@using Blazor_Training.Domain
+@inject Blazor_Training.Application.EmployeeService Service
 @inject NavigationManager NavManager
 @using System.ComponentModel.DataAnnotations
 

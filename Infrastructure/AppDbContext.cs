@@ -15,5 +15,7 @@ namespace Blazor_Training.Infrastructure
         // This line is the magic. It tells EF Core:
         // "Please create a table named 'Workers' that looks exactly like my 'Worker' class"
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Payslip> Payslips { get; set; }
+        public DbSet<StatutoryConfig> StatutoryConfigs { get; set; }
     }
 }
