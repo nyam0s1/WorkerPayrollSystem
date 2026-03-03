@@ -13,6 +13,6 @@ namespace Blazor_Training.Data
 
         // This line is the magic. It tells EF Core:
         // "Please create a table named 'Workers' that looks exactly like my 'Worker' class"
-        public DbSet<Worker> Workers { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

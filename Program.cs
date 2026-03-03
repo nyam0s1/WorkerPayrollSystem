@@ -16,7 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // 2. Add the Service (Scoped)
 // We change this from "Singleton" to "Scoped" because databases don't like open connections staying open forever.
 // "Scoped" means "Create a new connection for each user request."
-builder.Services.AddScoped<WorkerService>();
+builder.Services.AddScoped<EmployeeService>();
 
 var app = builder.Build();
 

@@ -1,5 +1,5 @@
 ﻿@using Blazor_Training.Data
-@inject Blazor_Training.Data.WorkerService Service
+@inject Blazor_Training.Data.EmployeeService Service
 @page "/"
 
 <nav class="navbar">
@@ -13,8 +13,8 @@
 <div class="main-layout">
 	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
 	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
-		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
-		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="add">➕Add Employee</NavLink>
+		<NavLink class="btn btn-blue" href="employees">📃View Employees</NavLink>
 		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
 		<NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
 	</nav>
@@ -41,10 +41,10 @@
 		</div>
 		<div class="buttons">
 			<NavLink class="Add" href="add">
-				Register a New Worker
+				Register a New Employee
 			</NavLink>
 			<NavLink class="View" href="workers">
-				View Full Workers List
+				View Full Employees List
 			</NavLink>
 		</div>
 	</div>
@@ -77,10 +77,10 @@
 
 	async Task AnimateNumbers()
 	{
-		var allWorkers = Service.GetAllWorkers();
-		int finalCount = allWorkers.Count;
-		double finalSalary = allWorkers.Sum(w => w.NetSalary);
-		int finalOvertime = allWorkers.Count(w => w.overTimeHours > 0);
+		var allEmployees = Service.GetAllEmployees();
+		int finalCount = allEmployees.Count;
+		double finalSalary = allEmployees.Sum(w => w.NetSalary);
+		int finalOvertime = allEmployees.Count(w => w.overTimeHours > 0);
 
 		for (int i = 0; i <= 50; i++)
 		{

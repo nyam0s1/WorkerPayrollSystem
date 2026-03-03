@@ -1,7 +1,7 @@
-﻿@page "/workers"
+﻿@page "/employees"
 @rendermode InteractiveServer
 @using Blazor_Training.Data
-@inject WorkerService Service
+@inject EmployeeService Service
 @inject IJSRuntime JsRuntime
 
 <nav class="navbar">
@@ -15,13 +15,13 @@
 <div class="main-layout">
 	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
 	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
-		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
-		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="add">➕Add Employee</NavLink>
+		<NavLink class="btn btn-blue" href="employees">📃View Employees</NavLink>
 		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
 		<NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
 	</nav>
 	<div class="main-content">
-		<h1>Workers Details</h1>
+		<h1>Employees Details</h1>
 		<div class="table">
 			<div class="search-box">
 				<input type="text"
@@ -42,7 +42,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					@foreach (Worker w in myWorkers)
+					@foreach (Employee w in myEmployees)
 					{
 						<tr>
 							<td>@w.Name</td>
@@ -68,28 +68,28 @@
 {
 	bool sidebarVisible = true;
 	string searchText = "";
-	List<Worker> myWorkers = new List<Worker>();
+	List<Employee> myEmployees = new List<Employee>();
 
 	protected override void OnInitialized()
 	{
-		myWorkers = Service.GetAllWorkers();
+		myEmployees = Service.GetAllEmployees();
 	}
 
 	void PerformSearch()
 	{
-		myWorkers = Service.SearchWorkers(searchText);
+		myEmployees = Service.SearchWorkers(searchText);
 	}
 
-	async Task DeleteWorker(Worker worker)
+	async Task DeleteWorker(Employee employee)
 	{
 		bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
-			$"Are you sure you want to delete {worker.Name}?");
+			$"Are you sure you want to delete {employee.Name}?");
 
 		if (!confirmed)
 			return;
 
-		Service.DeleteWorker(worker);
+		Service.DeleteEmployee(employee);
 
-		myWorkers = Service.GetAllWorkers();
+		myEmployees = Service.GetAllEmployees();
 	}
 }

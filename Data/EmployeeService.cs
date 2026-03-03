@@ -2,62 +2,62 @@
 
 namespace Blazor_Training.Data
 {
-    public class WorkerService
+    public class EmployeeService
     {
         // We no longer use a "static List". We use the Database Context.
         private readonly AppDbContext _context;
 
         // Constructor: We ask the app to give us the database connection
-        public WorkerService(AppDbContext context)
+        public EmployeeService(AppDbContext context)
         {
             _context = context;
         }
 
         // READ: Get all workers from the DB table
-        public List<Worker> GetAllWorkers()
+        public List<Employee> GetAllEmployees()
         {
-            return _context.Workers.ToList();
+            return _context.Employees.ToList();
         }
 
-        public List<Worker> SearchWorkers(string searchText)
+        public List<Employee> SearchWorkers(string searchText)
         {
             if (string.IsNullOrWhiteSpace(searchText))
             {
-                return GetAllWorkers();
+                return GetAllEmployees();
             }
             else
             {
-                return _context.Workers
+                return _context.Employees
                     .Where(w => w.Name.Contains(searchText))
                     .ToList();
             }
         }
 
         // CREATE: Add a new worker to the DB
-        public void AddWorker(Worker worker)
+        public void AddEmployee(Employee employee)
         {
-            _context.Workers.Add(worker);
+            _context.Employees.Add(employee);
             _context.SaveChanges(); // This commits the change to the database
         }
 
         // UPDATE: Save changes to an existing worker
         // (We didn't need this before because memory lists update automatically. DBs don't!)
-        public void UpdateWorker(Worker worker)
+        public void UpdateEmployee(Employee employee)
         {
-            _context.Workers.Update(worker);
+            _context.Employees.Update(employee);
             _context.SaveChanges();
         }
 
         // READ: Find a single worker by ID
-        public Worker GetWorker(Guid Id)
+        public Employee GetEmployee(Guid Id)
         {
-            return _context.Workers.FirstOrDefault(w => w.Id == Id);
+            return _context.Employees.FirstOrDefault(w => w.Id == Id);
         }
 
         // DELETE: Remove a worker from the DB
-        public void DeleteWorker(Worker worker)
+        public void DeleteEmployee(Employee employee)
         {
-            _context.Workers.Remove(worker);
+            _context.Employees.Remove(employee);
             _context.SaveChanges();
         }
     }

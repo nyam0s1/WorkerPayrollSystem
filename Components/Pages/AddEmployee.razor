@@ -2,7 +2,7 @@
 @page "/edit/{Id:guid}"
 @rendermode InteractiveServer
 @using Blazor_Training.Data
-@inject Blazor_Training.Data.WorkerService Service
+@inject Blazor_Training.Data.EmployeeService Service
 @inject NavigationManager NavManager
 @using System.ComponentModel.DataAnnotations
 
@@ -16,28 +16,28 @@
 <div class="main-layout">
 	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
 	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
-		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
-		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="add">➕Add Employee</NavLink>
+		<NavLink class="btn btn-blue" href="employees">📃View Employees</NavLink>
 		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
 		<NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
 	</nav>
 
 	<div class="InputForm">
-		<h1>New Worker</h1>
-		<EditForm Model="newWorker" OnValidSubmit="SaveWorker">
+		<h1>New Employee</h1>
+		<EditForm Model="newEmployee" OnValidSubmit="SaveEmployee">
 			<DataAnnotationsValidator />
 			<ValidationSummary />
 		<div>
 			<label>Name</label><br />
-			<InputText placeholder="Enter Worker name" @bind-Value="newWorker.Name" class="form-control"/>
+			<InputText placeholder="Enter Worker name" @bind-Value="newEmployee.Name" class="form-control"/>
 		</div>
 		<div>
 			<label>Rate of Pay per Hour</label><br />
-			<InputNumber placeholder="Enter Worker payrate" @bind-Value ="newWorker.hourlyPay" class="form-control" />
+			<InputNumber placeholder="Enter Worker payrate" @bind-Value ="newEmployee.hourlyPay" class="form-control" />
 		</div>
 		<div>
 			<label>Number of Hours Worked</label><br />
-			<InputNumber placeholder="Enter Worked Hours" @bind-Value="newWorker.hoursWorked" class="form-control"/>
+			<InputNumber placeholder="Enter Worked Hours" @bind-Value="newEmployee.hoursWorked" class="form-control"/>
 		</div>
 		<button class="btn btn-blue" >Submit</button>
 		<button class="btn btn-red" @onclick="Cancel">Cancel</button>
@@ -50,31 +50,31 @@
 	bool sidebarVisible = true;
 	[Parameter]
 	public Guid Id { get; set; }
-	Worker newWorker = new Worker();
+	Employee newEmployee = new Employee();
 	protected override void OnInitialized()
 	{
 		if (Id != Guid.Empty)
 		{
-			var foundWorker = Service.GetWorker(Id);
+			var foundEmployee = Service.GetEmployee(Id);
 
-			newWorker = foundWorker;
+			newEmployee = foundEmployee;
 		}
 	}
-	void SaveWorker()
+	void SaveEmployee()
 	{
 		if (Id == Guid.Empty)
 		{
-			Service.AddWorker(newWorker);
+			Service.AddEmployee(newEmployee);
 		}
 		else
 		{
-			Service.UpdateWorker(newWorker);
+			Service.UpdateEmployee(newEmployee);
 		}
-		NavManager.NavigateTo("/workers");
+		NavManager.NavigateTo("/employees");
 	}
 
 	void Cancel()
 	{
-		NavManager.NavigateTo("/workers");
+		NavManager.NavigateTo("/employees");
 	}
 }
