@@ -3,6 +3,8 @@ namespace Blazor_Training.Domain;
 
 public class Payslip
 {
+    //primary key for the db
+    public Guid Id { get; set; } = Guid.NewGuid();
     //employee connected to these amounts
     public Guid EmployeeId { get; set; }
     //payroll identification

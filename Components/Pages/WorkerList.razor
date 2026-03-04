@@ -23,45 +23,55 @@
 	</nav>
 	<div class="main-content">
 		<h1>Employees Details</h1>
-		<div class="table">
-			<div class="search-box">
-				<input type="text"
-					   placeholder="🔍 Search by name"
-					   @bind="searchText"
-					   @bind:event="oninput"
-					   @bind:after="PerformSearch">
+		@if (myEmployees.Count == 0)
+		{
+			<div class="card">
+				<h3>No Workers in the system</h3>
+				<p>Click <NavLink class="btn btn-blue" href="add">here</NavLink> to add workers to the system.</p>
 			</div>
-			<table>
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Hourly Pay</th>
-						<th>Hours Worked</th>
-						<th>Overtime Hours</th>
-						<th>Total Salary</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					@foreach (Employee w in myEmployees)
-					{
+		}
+		else
+		{
+			<div class="table">
+				<div class="search-box">
+					<input type="text"
+					placeholder="🔍 Search by name"
+					@bind="searchText"
+					@bind:event="oninput"
+					@bind:after="PerformSearch">
+				</div>
+				<table>
+					<thead>
 						<tr>
-							<td>@w.Name</td>
-							<td>@w.hourlyPay</td>
-							<td>@w.hoursWorked</td>
-							<td style="@(w.overTimeHours > 0 ? "color: red; font-weight: bold": "")">
-								@w.overTimeHours
-							</td>
-							<td>@w.totalSalary</td>
-							<td>
-								<a href="edit/@w.Id" class="btn btn-pink">🖋️</a>
-								<button class="btn btn-pink" @onclick="() => DeleteWorker(w)">🗑️</button>
-							</td>
+							<th>Name</th>
+							<th>Hourly Pay</th>
+							<th>Hours Worked</th>
+							<th>Overtime Hours</th>
+							<th>Total Salary</th>
+							<th>Actions</th>
 						</tr>
-					}
-				</tbody>
-			</table>
-		</div>
+					</thead>
+					<tbody>
+						@foreach (Employee w in myEmployees)
+						{
+							<tr>
+								<td>@w.Name</td>
+								<td>@w.hourlyPay</td>
+								<td>@w.hoursWorked</td>
+								<td style="@(w.overTimeHours > 0 ? "color: red; font-weight: bold": "")">
+									@w.overTimeHours
+								</td>
+								<td>@w.totalSalary</td>
+								<td>
+									<a href="edit/@w.Id" class="btn btn-pink">🖋️</a>
+									<button class="btn btn-pink" @onclick="() => DeleteEmployee(w)">🗑️</button>
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
 	</div>
 </div>
 
@@ -78,10 +88,10 @@
 
 	void PerformSearch()
 	{
-		myEmployees = Service.SearchWorkers(searchText);
+		myEmployees = Service.SearchEmployees(searchText);
 	}
 
-	async Task DeleteWorker(Employee employee)
+	async Task DeleteEmployee(Employee employee)
 	{
 		bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
 			$"Are you sure you want to delete {employee.Name}?");

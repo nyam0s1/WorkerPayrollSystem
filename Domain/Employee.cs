@@ -94,13 +94,34 @@ namespace Blazor_Training.Domain
 
 
         // ==========================================
-        // 4. NEW FIXED SALARY & ALLOWANCES 
+        // 4. NEW FIXED SALARY & SMART GETTER
         // ==========================================
 
+        // This is the "backing field" that stores the fixed salary in the database
+        private decimal _basicSalary;
+
         /// <summary>
-        /// Fixed monthly salary for permanent employees (used by the tax engine).
+        /// The ultimate starting salary for the Tax Engine. 
+        /// Automatically checks if the worker is hourly or salaried.
         /// </summary>
-        public decimal BasicSalary { get; set; }
+        public decimal BasicSalary
+        {
+            get
+            {
+                // If they are an hourly worker, use their calculated total wage!
+                if (hourlyPay.HasValue && hourlyPay > 0)
+                {
+                    return (decimal)totalSalary; // Convert double to decimal for the tax engine
+                }
+
+                // If they are not hourly, use their fixed monthly salary
+                return _basicSalary;
+            }
+            set
+            {
+                _basicSalary = value;
+            }
+        }
 
         /// <summary>
         /// Taxable house allowance.
@@ -114,7 +135,25 @@ namespace Blazor_Training.Domain
 
 
         // ==========================================
-        // 5. TAX EXEMPTION STATUS
+        // 5. LEGACY NET SALARY (UI FALLBACK)
+        // ==========================================
+
+        /// <summary>
+        /// Preserved NetSalary property to prevent older UI pages from crashing.
+        /// Subtracts a flat 30,000 as per the original logic.
+        /// </summary>
+        public double NetSalary
+        {
+            get
+            {
+                double net = totalSalary - 30000;
+                return net < 0 ? 0 : net;
+            }
+        }
+
+
+        // ==========================================
+        // 6. TAX EXEMPTION STATUS
         // ==========================================
 
         /// <summary>

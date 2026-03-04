@@ -3,6 +3,8 @@ namespace Blazor_Training.Domain;
 
 public class StatutoryConfig
 {
+    //primary key for the db
+    public Guid Id { get; set; } = Guid.NewGuid();
     //PAYE rates
     public decimal PayeRate { get; set; }
     //SHA rate 

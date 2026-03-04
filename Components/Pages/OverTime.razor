@@ -13,19 +13,20 @@
 <div class="main-layout">
 	<button class="sidebarToggle" @onclick="() => sidebarVisible = !sidebarVisible">☰</button>
 	<nav class="@(sidebarVisible ? "sidebar" : "sidebar collapse")">
-		<NavLink class="btn btn-blue" href="add">➕Add Worker</NavLink>
-		<NavLink class="btn btn-blue" href="workers">📃View Workers</NavLink>
+		<NavLink class="btn btn-blue" href="add">➕Add Employee</NavLink>
+		<NavLink class="btn btn-blue" href="employees">📃View Employees</NavLink>
 		<NavLink class="btn btn-blue" href="overtime">Overtime Section</NavLink>
-		<NavLink class="btn btn-blue" href="pension">Pension Section</NavLink>
+		<NavLink class="btn btn-blue" href="calculator">🖩Tax Calculator</NavLink>
+		<NavLink class="btn btn-blue" href="settings">⚙️Settings</NavLink>
 	</nav>
 
 	<div class="main-content">
 		<h1>Overtime Workers Details</h1>
-		@if (overtimeWorkers.Count == 0)
+		@if (overtimeEmployees.Count == 0)
 		{
 			<div class="card">
 				<h3>No Overtime Detected</h3>
-				<p>All workers are within the standard 40-hour limit.</p>
+				<p>All employees are within the standard 40-hour limit.</p>
 			</div>
 		}
 		else
@@ -49,7 +50,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						@foreach (var w in overtimeWorkers)
+						@foreach (var w in overtimeEmployees)
 						{
 							<tr>
 								<td>@w.Name</td>
@@ -58,7 +59,7 @@
 								<td>@( (w.overTimeHours * w.hourlyPay.GetValueOrDefault() * 1.5).ToString("N0") )</td>
 								<td>
 									<a href="edit/@w.Id" class="btn btn-pink">🖋️</a>
-									<button class="btn btn-pink" @onclick="() => DeleteWorker(w)">🗑️</button>
+									<button class="btn btn-pink" @onclick="() => DeleteEmployee(w)">🗑️</button>
 								</td>
 							</tr>
 						}
@@ -74,31 +75,31 @@
 	string searchText = "";
 
 	// We create a specific list just for this page
-	List<Worker> overtimeWorkers = new List<Worker>();
+	List<Employee> overtimeEmployees = new List<Employee>();
 
 	protected override void OnInitialized()
 	{
 		// 1. Get everyone
-		var allWorkers = Service.GetAllWorkers();
+		var allEmployees = Service.GetAllEmployees();
 
 		// 2. Filter: Keep ONLY people with Overtime > 0
-		overtimeWorkers = allWorkers.Where(w => w.overTimeHours > 0).ToList();
+		overtimeEmployees = allEmployees.Where(w => w.overTimeHours > 0).ToList();
 	}
 
 	void PerformSearch()
 	{
-		overtimeWorkers = Service.SearchWorkers(searchText);
+		overtimeEmployees = Service.SearchEmployees(searchText);
 	}
 
-	async Task DeleteWorker(Employee worker)
+	async Task DeleteEmployee(Employee employee)
 	{
 		bool confirmed = await JsRuntime.InvokeAsync<bool>("confirm",
-			$"Are you sure you want to delete {worker.Name}?");
+			$"Are you sure you want to delete {employee.Name}?");
 
 		if (!confirmed)
 			return;
 
-		Service.DeleteWorker(worker);
+		Service.DeleteEmployee(employee);
 
 		PerformSearch();
 	}

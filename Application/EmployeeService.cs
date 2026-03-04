@@ -21,7 +21,7 @@ namespace Blazor_Training.Application
             return _context.Employees.ToList();
         }
 
-        public List<Employee> SearchWorkers(string searchText)
+        public List<Employee> SearchEmployees(string searchText)
         {
             if (string.IsNullOrWhiteSpace(searchText))
             {
