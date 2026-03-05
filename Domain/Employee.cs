@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Blazor_Training.Domain
 {
@@ -179,5 +180,16 @@ namespace Blazor_Training.Domain
             hourlyPay = _hourlypay;
             hoursWorked = _hoursworked;
         }
+
+        // ==========================================
+        // 7. TEMPORARY DATA (NOT SAVED IN DB)
+        // ==========================================
+
+        /// <summary>
+        /// Holds the calculated payslip for the UI to display. 
+        /// Ignored by the database.
+        /// </summary>
+        [NotMapped]
+        public Payslip? CurrentPayslip { get; set; }
     }
 }

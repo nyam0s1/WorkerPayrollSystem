@@ -1,7 +1,9 @@
 ﻿@page "/employees"
 @rendermode InteractiveServer
 @using Blazor_Training.Domain
-@inject EmployeeService Service
+
+@* Ensure the injected service points exactly where it needs to *@
+@inject Blazor_Training.Application.EmployeeService Service
 @inject IJSRuntime JsRuntime
 
 <nav class="navbar">
@@ -27,7 +29,7 @@
 		{
 			<div class="card">
 				<h3>No Workers in the system</h3>
-				<p>Click <NavLink class="btn btn-blue" href="add">here</NavLink> to add workers to the system.</p>
+				<p>Click <NavLink href="add">here</NavLink> to add workers to the system.</p>
 			</div>
 		}
 		else
@@ -35,38 +37,94 @@
 			<div class="table">
 				<div class="search-box">
 					<input type="text"
-					placeholder="🔍 Search by name"
-					@bind="searchText"
-					@bind:event="oninput"
-					@bind:after="PerformSearch">
+						   placeholder="🔍 Search by name"
+						   @bind="searchText"
+						   @bind:event="oninput"
+						   @bind:after="PerformSearch">
 				</div>
 				<table>
 					<thead>
 						<tr>
+							<th></th>
 							<th>Name</th>
 							<th>Hourly Pay</th>
 							<th>Hours Worked</th>
 							<th>Overtime Hours</th>
 							<th>Total Salary</th>
+							<th>Net Salary</th>
 							<th>Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						@foreach (Employee w in myEmployees)
 						{
-							<tr>
+							<tr @onclick="() => ToggleRow(w.Id)" style="cursor: pointer; transition: background-color 0.2s;">
+
+								<td>@(expandedRows.Contains(w.Id) ? "🔽" : "▶️")</td>
+
 								<td>@w.Name</td>
 								<td>@w.hourlyPay</td>
 								<td>@w.hoursWorked</td>
-								<td style="@(w.overTimeHours > 0 ? "color: red; font-weight: bold": "")">
+								<td style="@(w.overTimeHours > 0 ? "color: red; font-weight: bold" : "")">
 									@w.overTimeHours
 								</td>
-								<td>@w.totalSalary</td>
+								<td>@w.totalSalary.ToString("N2")</td>
+
+								<td style="font-weight: bold; color: green;">
+									@(w.CurrentPayslip != null ? w.CurrentPayslip.NetPay.ToString("N2") : "0.00")
+								</td>
+
 								<td>
-									<a href="edit/@w.Id" class="btn btn-pink">🖋️</a>
-									<button class="btn btn-pink" @onclick="() => DeleteEmployee(w)">🗑️</button>
+									<a href="edit/@w.Id" class="btn btn-pink" @onclick:stopPropagation>🖋️</a>
+									<button class="btn btn-pink" @onclick="() => DeleteEmployee(w)" @onclick:stopPropagation>🗑️</button>
 								</td>
 							</tr>
+
+							@if (expandedRows.Contains(w.Id) && w.CurrentPayslip != null)
+							{
+								<tr style="background-color: #f8f9fa;">
+									<td colspan="8" style="padding: 20px;">
+										<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+
+											<div style="width: 70%;">
+												<h4 style="margin-top: 0; margin-bottom: 10px;">Payslip Breakdown</h4>
+												<table style="width: 100%; border-collapse: collapse; background: white; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+													<tbody>
+														<tr>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee;"><strong>Gross Pay</strong></td>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right;"><strong>@w.CurrentPayslip.GrossPay.ToString("N2") KES</strong></td>
+														</tr>
+														<tr>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; color: #dc3545;">NSSF (Tier 1 & 2)</td>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; color: #dc3545;">-@w.CurrentPayslip.NssfAmount.ToString("N2") KES</td>
+														</tr>
+														<tr>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; color: #dc3545;">PAYE (Tax)</td>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; color: #dc3545;">-@w.CurrentPayslip.PayeAmount.ToString("N2") KES</td>
+														</tr>
+														<tr>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; color: #dc3545;">SHA (2.75%)</td>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; color: #dc3545;">-@w.CurrentPayslip.ShaAmount.ToString("N2") KES</td>
+														</tr>
+														<tr>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; color: #dc3545;">Housing Levy (1.5%)</td>
+															<td style="padding: 8px 12px; border-bottom: 1px solid #eee; text-align: right; color: #dc3545;">-@w.CurrentPayslip.HousingLevyAmount.ToString("N2") KES</td>
+														</tr>
+														<tr style="background-color: #e6ffe6; border-top: 2px solid green;">
+															<td style="padding: 10px 12px; font-weight: bold; color: green; font-size: 1.1em;">Final Net Pay</td>
+															<td style="padding: 10px 12px; font-weight: bold; color: green; text-align: right; font-size: 1.1em;">@w.CurrentPayslip.NetPay.ToString("N2") KES</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+
+											<div>
+												<a href="payslip/@w.Id" class="btn btn-blue" @onclick:stopPropagation>🖨️ Official Payslip</a>
+											</div>
+										</div>
+									</td>
+								</tr>
+							}
 						}
 					</tbody>
 				</table>
@@ -81,14 +139,28 @@
 	string searchText = "";
 	List<Employee> myEmployees = new List<Employee>();
 
-	protected override void OnInitialized()
+	// Keeps track of which specific table rows are currently expanded
+	HashSet<Guid> expandedRows = new HashSet<Guid>();
+
+	protected override async Task OnInitializedAsync()
 	{
-		myEmployees = Service.GetAllEmployees();
+		// Grabs the employees AND calculates their exact taxes on page load
+		myEmployees = await Service.GetAllEmployeesWithCalculatedPayAsync();
 	}
 
-	void PerformSearch()
+	// Opens or closes the detailed tax breakdown drawer
+	void ToggleRow(Guid employeeId)
 	{
-		myEmployees = Service.SearchEmployees(searchText);
+		if (expandedRows.Contains(employeeId))
+			expandedRows.Remove(employeeId); // Close it
+		else
+			expandedRows.Add(employeeId);    // Open it
+	}
+
+	// Updated to async so the search results pass through the tax engine
+	async Task PerformSearch()
+	{
+		myEmployees = await Service.SearchEmployeesWithCalculatedPayAsync(searchText);
 	}
 
 	async Task DeleteEmployee(Employee employee)
@@ -101,6 +173,7 @@
 
 		Service.DeleteEmployee(employee);
 
-		myEmployees = Service.GetAllEmployees();
+		// Updated to the async calculation method so the table refreshes correctly
+		myEmployees = await Service.GetAllEmployeesWithCalculatedPayAsync();
 	}
 }

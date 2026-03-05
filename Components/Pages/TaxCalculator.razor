@@ -32,10 +32,11 @@
         <p style="margin-bottom: 20px;">Enter a monthly basic salary below to instantly calculate all statutory deductions.</p>
 
         <div class="table">
+
             <div class="search-box" style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px; border: none; padding: 0;">
-                <label style="font-weight: bold; white-space: nowrap;">Basic Salary (KES):</label>
                 <input type="number"
-                       placeholder="Enter salary..."
+                       class="form-control"
+                       placeholder="Enter Basic Salary (KES)..."
                        @bind="inputSalary"
                        style="flex-grow: 1; border: 1px solid #ccc; padding: 10px; border-radius: 4px;" />
                 <button class="btn btn-blue" style="margin: 0;" @onclick="CalculateTax">Calculate</button>
@@ -91,7 +92,7 @@
     bool sidebarVisible = true;
 
     // Binds directly to the HTML input box above
-    decimal inputSalary;
+    decimal? inputSalary;
 
     // Holds the final math results. Starts as null so the table hides on initial page load.
     Payslip? generatedSlip;
@@ -115,7 +116,7 @@
         // We only pass the basic salary from the input; allowances are set to 0 for this standalone calculator.
         var dummyEmployee = new Employee
         {
-            BasicSalary = inputSalary,
+            BasicSalary = inputSalary ?? 0,
             HouseAllowance = 0,
             TransportAllowance = 0,
             HasDisability = false
