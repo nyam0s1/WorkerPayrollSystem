@@ -722,7 +722,6 @@ th {
 /* The mini-table inside the drawer */
 .drawer-table-wrapper {
     width: 100%;
-    max-width: 600px;
 }
 
 .drawer-table {

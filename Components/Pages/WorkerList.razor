@@ -53,7 +53,7 @@
                             <th>Hourly Pay</th>
                             <th>Hours Worked</th>
                             <th>Overtime Hours</th>
-                            <th>Total Salary</th>
+                            <th>Gross Salary</th>
                             <th>Net Salary</th>
                             <th>Actions</th>
                         </tr>
@@ -82,7 +82,7 @@
                                     <button class="btn btn-pink" @onclick="() => DeleteEmployee(w)" @onclick:stopPropagation>🗑️</button>
 
                                     <button class="btn btn-blue" @onclick="() => ToggleRow(w.Id)" @onclick:stopPropagation>
-                                        @(expandedRows.Contains(w.Id) ? "🔽" : "▶️")
+                                        @(expandedRows.Contains(w.Id) ? "▶️": "🔽")
                                     </button>
                                 </td>
                             </tr>
