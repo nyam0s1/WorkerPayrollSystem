@@ -1,11 +1,10 @@
 ﻿@page "/calculator"
 
-@* 1. IMPORTS & INJECTIONS *@
-@* We use the Domain for our Employee and Payslip models, and Application for our interfaces *@
+@* Imports for our domain models and payroll logic interfaces *@
 @using Blazor_Training.Domain
 @using Blazor_Training.Application
 
-@* Inject the tax calculation engine we registered in Program.cs *@
+@* Inject the standalone tax calculation engine *@
 @inject IPayrollCalculatorService PayrollService
 
 <nav class="navbar">
@@ -29,56 +28,60 @@
 
     <div class="main-content">
         <h1>Kenyan Tax Calculator</h1>
-        <p style="margin-bottom: 20px;">Enter a monthly basic salary below to instantly calculate all statutory deductions.</p>
+
+        <p class="page-subtitle">Enter a monthly basic salary below to instantly calculate all statutory deductions.</p>
 
         <div class="table">
 
-            <div class="search-box" style="display: flex; gap: 15px; align-items: center; margin-bottom: 20px; border: none; padding: 0;">
+            <div class="calc-input-group">
+
                 <input type="number"
-                       class="form-control"
+                       class="form-control calc-input"
                        placeholder="Enter Basic Salary (KES)..."
-                       @bind="inputSalary"
-                       style="flex-grow: 1; border: 1px solid #ccc; padding: 10px; border-radius: 4px;" />
-                <button class="btn btn-blue" style="margin: 0;" @onclick="CalculateTax">Calculate</button>
+                       @bind="inputSalary" />
+
+                <button class="btn btn-blue calc-btn" @onclick="CalculateTax">Calculate</button>
             </div>
 
+            @* Only show the breakdown table IF the user has clicked Calculate *@
             @if (generatedSlip != null)
             {
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: left;">Description</th>
-                            <th style="text-align: right;">Amount (KES)</th>
+                            <th class="text-left">Description</th>
+                            <th class="text-right">Amount (KES)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><strong>Gross Pay</strong></td>
-                            <td style="text-align: right; font-weight: bold;">@generatedSlip.GrossPay.ToString("N2")</td>
+                            <td class="text-right font-weight-bold">@generatedSlip.GrossPay.ToString("N2")</td>
                         </tr>
                         <tr>
-                            <td style="color: red;">NSSF Deduction (Tier 1 & 2)</td>
-                            <td style="text-align: right; color: red;">- @generatedSlip.NssfAmount.ToString("N2")</td>
+                            <td class="text-danger">NSSF Deduction (Tier 1 & 2)</td>
+                            <td class="text-right text-danger">- @generatedSlip.NssfAmount.ToString("N2")</td>
                         </tr>
                         <tr>
                             <td>Taxable Pay</td>
-                            <td style="text-align: right;">@generatedSlip.TaxablePay.ToString("N2")</td>
+                            <td class="text-right">@generatedSlip.TaxablePay.ToString("N2")</td>
                         </tr>
                         <tr>
-                            <td style="color: red;">PAYE (After KES 2,400 Relief)</td>
-                            <td style="text-align: right; color: red;">- @generatedSlip.PayeAmount.ToString("N2")</td>
+                            <td class="text-danger">PAYE (After KES 2,400 Relief)</td>
+                            <td class="text-right text-danger">- @generatedSlip.PayeAmount.ToString("N2")</td>
                         </tr>
                         <tr>
-                            <td style="color: red;">SHA Deduction (2.75%)</td>
-                            <td style="text-align: right; color: red;">- @generatedSlip.ShaAmount.ToString("N2")</td>
+                            <td class="text-danger">SHA Deduction (2.75%)</td>
+                            <td class="text-right text-danger">- @generatedSlip.ShaAmount.ToString("N2")</td>
                         </tr>
                         <tr>
-                            <td style="color: red;">Housing Levy (1.5%)</td>
-                            <td style="text-align: right; color: red;">- @generatedSlip.HousingLevyAmount.ToString("N2")</td>
+                            <td class="text-danger">Housing Levy (1.5%)</td>
+                            <td class="text-right text-danger">- @generatedSlip.HousingLevyAmount.ToString("N2")</td>
                         </tr>
-                        <tr style="background-color: #e6ffe6; border-top: 2px solid green;">
-                            <td style="font-size: 1.1em; font-weight: bold; color: green;">NET PAY</td>
-                            <td style="font-size: 1.1em; font-weight: bold; color: green; text-align: right;">@generatedSlip.NetPay.ToString("N2")</td>
+
+                        <tr class="net-pay-row">
+                            <td class="net-pay-text">NET PAY</td>
+                            <td class="text-right net-pay-text">@generatedSlip.NetPay.ToString("N2")</td>
                         </tr>
                     </tbody>
                 </table>
@@ -88,32 +91,30 @@
 </div>
 
 @code {
-    // Controls the sidebar toggle
     bool sidebarVisible = true;
 
     // Binds directly to the HTML input box above
     decimal? inputSalary;
 
-    // Holds the final math results. Starts as null so the table hides on initial page load.
+    // Holds the final math results. Starts null so the table remains hidden initially.
     Payslip? generatedSlip;
 
-    // Hardcoded KRA statutory limits and rates for the current fiscal year
+    // Hardcoded KRA statutory limits for the standalone calculator
     private StatutoryConfig currentLaw = new StatutoryConfig
     {
         PersonalRelief = 2400m,
         NssfUpperLimit = 18000m,
-        ShaRate = 0.0275m,   // 2.75% Social Health Authority
-        HousingLevy = 0.015m // 1.5% Housing Levy
+        ShaRate = 0.0275m,
+        HousingLevy = 0.015m
     };
 
     /// <summary>
     /// Triggers when the 'Calculate' button is clicked.
-    /// Sends the input salary to the background engine for processing.
+    /// Creates a dummy employee and passes it to the calculation engine.
     /// </summary>
     private void CalculateTax()
     {
         // 1. Create a temporary 'dummy' employee just for the math engine
-        // We only pass the basic salary from the input; allowances are set to 0 for this standalone calculator.
         var dummyEmployee = new Employee
         {
             BasicSalary = inputSalary ?? 0,
@@ -122,8 +123,7 @@
             HasDisability = false
         };
 
-        // 2. Fire the engine!
-        // Pass the dummy employee and the current tax law into our scoped service
+        // 2. Fire the engine and store the result in 'generatedSlip' so the UI updates
         generatedSlip = PayrollService.GeneratePayslip(dummyEmployee, currentLaw);
     }
 }

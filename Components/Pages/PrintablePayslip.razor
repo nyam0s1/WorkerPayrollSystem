@@ -1,93 +1,11 @@
 ﻿@page "/payslip/{Id:guid}"
 @rendermode InteractiveServer
-@using Blazor_Training.Domain
 
-@* Inject the service to grab the employee data and taxes *@
+@* Imports for database models *@
+@using Blazor_Training.Domain
 @inject Blazor_Training.Application.EmployeeService Service
 
-<style>
-    /* ==========================================
-           SCREEN STYLES (What you see in the browser)
-           ========================================== */
-    .payslip-container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 40px;
-        background: white;
-        border: 1px solid #ccc;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    .payslip-header {
-        text-align: center;
-        border-bottom: 2px solid #333;
-        padding-bottom: 20px;
-        margin-bottom: 30px;
-    }
-
-    .payslip-details {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 30px;
-        font-size: 1.1em;
-    }
-
-    .payslip-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 30px;
-    }
-
-        .payslip-table th, .payslip-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: left;
-        }
-
-        .payslip-table th {
-            background-color: #f8f9fa;
-        }
-
-    .text-right {
-        text-align: right !important;
-    }
-
-    .text-danger {
-        color: #dc3545;
-    }
-
-    .text-success {
-        color: green;
-        font-weight: bold;
-    }
-
-    /* ==========================================
-           PRINT STYLES (What the printer/PDF sees)
-           ========================================== */
-    @@media print {
-        body {
-            background: white;
-        }
-        /* Forcefully hide the Blazor layout elements so it looks like a real document */
-        .navbar, .sidebar, .sidebarToggle, .print-btn {
-            display: none !important;
-        }
-
-        .main-content {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        /* Remove the box shadow and borders for a clean paper look */
-        .payslip-container {
-            border: none;
-            box-shadow: none;
-            margin: 0;
-            padding: 0;
-        }
-    }
-</style>
-
+@* If the data hasn't loaded yet, show a fallback message *@
 @if (employee == null || employee.CurrentPayslip == null)
 {
     <div class="main-content">
@@ -97,9 +15,10 @@
 else
 {
     <div class="payslip-container">
+
         <div class="payslip-header">
-            <h1 style="margin: 0; color: #2c3e50;">COMPANY PAYROLL SYSTEM</h1>
-            <h3 style="margin: 5px 0; color: #7f8c8d;">Official Employee Payslip</h3>
+            <h1 class="payslip-title">COMPANY PAYROLL SYSTEM</h1>
+            <h3 class="payslip-subtitle">Official Employee Payslip</h3>
         </div>
 
         <div class="payslip-details">
@@ -107,7 +26,7 @@ else
                 <strong>Employee Name:</strong> @employee.Name<br />
                 <strong>Employee ID:</strong> @employee.Id.ToString().Substring(0, 8).ToUpper()
             </div>
-            <div style="text-align: right;">
+            <div class="text-right">
                 <strong>Pay Period:</strong> @DateTime.Now.ToString("MMMM yyyy")<br />
                 <strong>Date Printed:</strong> @DateTime.Now.ToString("dd MMM yyyy")
             </div>
@@ -149,14 +68,14 @@ else
                 </tr>
             </tbody>
             <tfoot>
-                <tr style="background-color: #e6ffe6; border-top: 2px solid green;">
-                    <th colspan="2" style="text-align: right; font-size: 1.2em; color: green;">FINAL NET PAY:</th>
-                    <th class="text-right text-success" style="font-size: 1.3em;">@employee.CurrentPayslip.NetPay.ToString("N2")</th>
+                <tr class="payslip-net-row">
+                    <th colspan="2" class="text-right payslip-net-label">FINAL NET PAY:</th>
+                    <th class="text-right payslip-net-value">@employee.CurrentPayslip.NetPay.ToString("N2")</th>
                 </tr>
             </tfoot>
         </table>
 
-        <div style="text-align: center; margin-top: 40px;">
+        <div class="payslip-actions">
             <button class="btn btn-blue print-btn" onclick="window.print()">🖨️ Print to PDF</button>
             <a href="employees" class="btn btn-pink print-btn">⬅️ Back to List</a>
         </div>
@@ -164,7 +83,7 @@ else
 }
 
 @code {
-    // 1. This parameter catches the exact ID from the URL address bar
+    // Catches the exact ID from the URL address bar
     [Parameter]
     public Guid Id { get; set; }
 
@@ -172,10 +91,10 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        // 2. Fetch everyone with their taxes calculated
+        // 1. Fetch everyone with their taxes calculated
         var allEmployees = await Service.GetAllEmployeesWithCalculatedPayAsync();
 
-        // 3. Find the exact employee who matches the ID in the URL
+        // 2. Find the exact employee who matches the ID in the URL
         employee = allEmployees.FirstOrDefault(e => e.Id == Id);
     }
 }

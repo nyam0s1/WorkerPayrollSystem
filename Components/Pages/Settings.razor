@@ -1,7 +1,11 @@
 ﻿@page "/settings"
 @rendermode InteractiveServer
+
+@* Imports for our database models and application logic *@
 @using Blazor_Training.Domain
 @using Blazor_Training.Application
+
+@* Inject the service that handles reading and writing the tax configurations *@
 @inject SettingsService SettingsService
 
 <nav class="navbar">
@@ -24,9 +28,12 @@
 
     <div class="main-content">
         <h1>Statutory Tax Settings</h1>
-        <p style="margin-bottom: 20px;">Manage the active KRA, NSSF, and SHA rates used by the calculation engine.</p>
 
-        <div class="table" style="max-width: 800px;">
+        <p class="page-subtitle">Manage the active KRA, NSSF, and SHA rates used by the calculation engine.</p>
+
+        <div class="table settings-table">
+
+            @* Show a loading message while we fetch the rules from the database *@
             @if (config == null)
             {
                 <p><em>Loading current tax laws...</em></p>
@@ -36,29 +43,31 @@
                 <table>
                     <thead>
                         <tr>
-                            <th style="text-align: left;">Statutory Deduction</th>
-                            <th style="text-align: center;">Current Rate / Limit</th>
-                            <th style="text-align: center;">Actions</th>
+                            <th class="text-left">Statutory Deduction</th>
+                            <th class="text-center">Current Rate / Limit</th>
+                            <th class="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td><strong>Personal Relief (KES)</strong></td>
-                            <td style="text-align: center;">
+                            <td class="text-center">
+                                @* If in edit mode, show an input box bound to the config value *@
                                 @if (isEditing)
                                 {
-                                    <input type="number" @bind="config.PersonalRelief" class="search-box" style="width: 120px; text-align: center;" />
+                                    <input type="number" @bind="config.PersonalRelief" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
                                     <span>@config.PersonalRelief.ToString("N2")</span>
                                 }
                             </td>
-                            <td rowspan="4" style="vertical-align: middle; text-align: center; border-left: 1px solid #ddd;">
+
+                            <td rowspan="4" class="actions-cell">
                                 @if (isEditing)
                                 {
-                                    <button class="btn btn-success" style="display: block; width: 100%; margin-bottom: 10px;" @onclick="SaveChanges">💾 Save</button>
-                                    <button class="btn btn-pink" style="display: block; width: 100%;" @onclick="CancelEdit">❌ Cancel</button>
+                                    <button class="btn btn-success btn-block mb-10" @onclick="SaveChanges">💾 Save</button>
+                                    <button class="btn btn-pink btn-block" @onclick="CancelEdit">❌ Cancel</button>
                                 }
                                 else
                                 {
@@ -69,10 +78,10 @@
 
                         <tr>
                             <td><strong>NSSF Upper Limit (KES)</strong></td>
-                            <td style="text-align: center;">
+                            <td class="text-center">
                                 @if (isEditing)
                                 {
-                                    <input type="number" @bind="config.NssfUpperLimit" class="search-box" style="width: 120px; text-align: center;" />
+                                    <input type="number" @bind="config.NssfUpperLimit" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
@@ -83,10 +92,10 @@
 
                         <tr>
                             <td><strong>SHA Rate (Decimal)</strong></td>
-                            <td style="text-align: center;">
+                            <td class="text-center">
                                 @if (isEditing)
                                 {
-                                    <input type="number" step="0.0001" @bind="config.ShaRate" class="search-box" style="width: 120px; text-align: center;" />
+                                    <input type="number" step="0.0001" @bind="config.ShaRate" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
@@ -97,10 +106,10 @@
 
                         <tr>
                             <td><strong>Housing Levy (Decimal)</strong></td>
-                            <td style="text-align: center;">
+                            <td class="text-center">
                                 @if (isEditing)
                                 {
-                                    <input type="number" step="0.001" @bind="config.HousingLevy" class="search-box" style="width: 120px; text-align: center;" />
+                                    <input type="number" step="0.001" @bind="config.HousingLevy" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
@@ -117,30 +126,43 @@
 
 @code {
     bool sidebarVisible = true;
+
+    // Toggles between viewing the table and showing the input boxes
     bool isEditing = false;
+
+    // Holds the active tax rules fetched from the database
     StatutoryConfig? config;
 
+    /// <summary>
+    /// Runs automatically when the page loads to fetch the current tax rules
+    /// </summary>
     protected override async Task OnInitializedAsync()
     {
-        // Fetch the active config from the database on page load
         config = await SettingsService.GetCurrentConfigAsync();
     }
 
+    /// <summary>
+    /// Switches the UI into Edit Mode
+    /// </summary>
     private void StartEditing()
     {
         isEditing = true;
     }
 
+    /// <summary>
+    /// Discards any unsaved typing by re-fetching the original values from the DB
+    /// </summary>
     private async Task CancelEdit()
     {
-        // If they hit cancel, we fetch from the database again to discard their unsaved typing
         config = await SettingsService.GetCurrentConfigAsync();
         isEditing = false;
     }
 
+    /// <summary>
+    /// Saves the new tax rates to the database and exits Edit Mode
+    /// </summary>
     private async Task SaveChanges()
     {
-        // Save the new values to the database and return to View mode
         await SettingsService.SaveConfigAsync(config);
         isEditing = false;
     }

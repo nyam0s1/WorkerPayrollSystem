@@ -632,3 +632,272 @@ th {
     opacity: 1;
 }
 */
+
+/* ==========================================================================
+   GLOBAL UTILITY CLASSES
+   ========================================================================== */
+.text-left {
+    text-align: left !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-danger {
+    color: #dc3545 !important;
+}
+/* Red for deductions/overtime */
+.text-success {
+    color: green !important;
+}
+/* Green for positive money */
+.fw-bold {
+    font-weight: bold !important;
+}
+
+.mb-10 {
+    margin-bottom: 10px !important;
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.page-subtitle {
+    margin-bottom: 20px;
+    color: #444;
+}
+
+/* Adding the missing green button skin for the 'Save' button */
+.btn-success {
+    background-color: #28a745;
+    color: white;
+}
+
+    .btn-success:hover {
+        background-color: #218838;
+        transform: scale(1.05);
+        transition: 0.3s ease;
+    }
+
+
+/* ==========================================================================
+   VIEW EMPLOYEES PAGE (The Expandable Drawer)
+   ========================================================================== */
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+    .clickable-row:hover {
+        background-color: #f1f5f9; /* Slight highlight when hovering over a worker */
+    }
+
+/* The outer container of the dropdown drawer */
+.drawer-row {
+    background-color: #f8f9fa;
+}
+
+.drawer-cell {
+    padding: 20px;
+}
+
+.drawer-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer-title {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* The mini-table inside the drawer */
+.drawer-table-wrapper {
+    width: 100%;
+    max-width: 600px;
+}
+
+.drawer-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-top: 0;
+}
+
+.drawer-td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+/* The Net Pay row used in both the Drawer and the Tax Calculator */
+.net-pay-row {
+    background-color: #e6ffe6;
+    border-top: 2px solid green;
+}
+
+.net-pay-text {
+    padding: 10px 12px;
+    font-weight: bold;
+    color: green;
+    font-size: 1.1em;
+}
+
+/* Positioning for the Official Payslip button in Option 2 */
+.drawer-actions {
+    margin-top: 15px;
+}
+
+
+/* ==========================================================================
+   SETTINGS & TAX CALCULATOR PAGES
+   ========================================================================== */
+.settings-table {
+    max-width: 800px;
+}
+
+.input-small {
+    width: 120px;
+}
+
+.actions-cell {
+    vertical-align: middle;
+    text-align: center;
+    border-left: 1px solid #ddd;
+}
+
+/* Tax Calculator specific search bar styles */
+.calc-input-group {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    border: none;
+    padding: 0;
+}
+
+.calc-input {
+    flex-grow: 1;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+.calc-btn {
+    margin: 0;
+}
+
+
+/* ==========================================================================
+   OFFICIAL PRINTABLE PAYSLIP PAGE
+   ========================================================================== */
+.payslip-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 40px;
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.payslip-header {
+    text-align: center;
+    border-bottom: 2px solid #333;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.payslip-title {
+    margin: 0;
+    color: #2c3e50;
+}
+
+.payslip-subtitle {
+    margin: 5px 0;
+    color: #7f8c8d;
+}
+
+.payslip-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.payslip-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+    .payslip-table th, .payslip-table td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: left;
+    }
+
+    .payslip-table th {
+        background-color: #f8f9fa;
+    }
+
+.payslip-net-row {
+    background-color: #e6ffe6;
+    border-top: 2px solid green;
+}
+
+.payslip-net-label {
+    font-size: 1.2em;
+    color: green;
+}
+
+.payslip-net-value {
+    font-size: 1.3em;
+    color: green;
+    font-weight: bold;
+}
+
+.payslip-actions {
+    text-align: center;
+    margin-top: 40px;
+}
+
+
+/* ==========================================================================
+   PRINT MEDIA QUERY (Hides UI when generating PDF)
+   ========================================================================== */
+@media print {
+    /* 1. Force the background to be pure white */
+    body {
+        background: white !important;
+    }
+
+    /* 2. Hide all the web app navigation and the print buttons themselves */
+    .navbar, .sidebar, .sidebarToggle, .print-btn {
+        display: none !important;
+    }
+
+    /* 3. Strip out the margins so the document takes up the full A4 page */
+    .main-content {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* 4. Remove the artificial "paper" styling from the web view */
+    .payslip-container {
+        border: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+    }
+}
