@@ -1,78 +1,60 @@
-# 💸 Employee Payroll System
+# 💼 Kenyan Worker Payroll System
 
-### Automated Wage Processing for Casual Laborers
+An enterprise-ready, full-stack web application built with **Blazor Interactive Server** to automate employee payroll, calculate complex Kenyan statutory deductions, and generate official, print-ready financial documents.
 
-**The Employee Payroll System** is a dynamic single-page application (SPA) built with **Blazor Interactive Server**. It eliminates manual wage calculations by automating salary computation based on hourly rates and tracked hours.
+## 🏗️ System Architecture
 
----
+This project is structured using principles of **Clean Architecture** to ensure a strict separation of concerns, making the codebase scalable, testable, and maintainable.
 
-## 📸 Application Previews
+  * **Domain Layer:** Contains the core business entities (`Employee`, `Payslip`, `StatutoryConfig`).
+  * **Application Layer:** Houses the business logic and isolated services (`EmployeeService`, `PayrollCalculatorService`, `SettingsService`). The tax calculation engine operates independently of the UI.
+  * **Infrastructure Layer:** Manages data persistence using **Entity Framework Core (EF Core)** and SQL database migrations.
+  * **Presentation Layer (Components):** Built entirely with Blazor Server Razor components, relying on real-time SignalR communication for a seamless, single-page-application (SPA) feel.
 
-### 1. Employee Management Grid
+## ✨ Core Features & Modules
 
-*A responsive data table to view, edit, and delete employee records in real-time.*
+### 1\. 🇰🇪 Kenyan Statutory Tax Engine
 
-### 2. Dynamic Data Entry
+A fully automated, legally compliant tax calculation engine that converts Gross Pay to Net Pay in real-time. It accurately processes:
 
-*Input validation and automatic state updates using Blazor's two-way binding.*
+  * **PAYE (Income Tax):** Calculates tax brackets and automatically applies the standard KES 2,400 Personal Relief.
+  * **NSSF Deductions:** Processes Tier 1 & Tier 2 limits.
+  * **SHA (Social Health Authority):** Applies the 2.75% mandatory deduction.
+  * **Affordable Housing Levy:** Applies the 1.5% mandatory deduction.
 
----
+### 2\. ⚙️ Dynamic Statutory Configuration
 
-## 🚀 Key Features
+Tax laws change, so the system is built to adapt without requiring code deployments. The **Settings Dashboard** allows HR Admins to directly update active KRA rates, NSSF limits, and relief amounts in the database, instantly updating all future payroll math across the application.
 
-### ⚡ Automated Salary Calculation
+### 3\. 🖨️ Official Print-Ready Reporting
 
-* **Logic:** Utilizes C# Computed Properties (`=>`) to instantly calculate `Total Salary` based on `Hourly Pay` × `Hours Worked`.
-* **Accuracy:** Eliminates human error in manual multiplication for large workforces.
+The system features a dedicated `PrintablePayslip` engine. By utilizing advanced CSS `@media print` rules, the web application intelligently strips away all navigation bars, sidebars, and interactive buttons when a user initiates a print command. This transforms a web view into a clean, corporate A4 document ready for physical printing or PDF generation.
 
-### 🔄 Full CRUD Operations
+### 4\. 👥 Employee & Overtime Management
 
-* **Create:** Onboarding new workers via a dedicated modal-style form.
-* **Read:** Real-time fetching of Employee lists using a centralized Service.
-* **Update:** Edit existing records with ID-based routing (`/edit/{guid}`).
-* **Delete:** Instant removal of records from the system state.
+  * **Expandable Data Tables:** The primary employee list utilizes a custom "accordion" UI. Clicking an employee smoothly slides open a hidden drawer containing their exact tax breakdown, eliminating the need to load separate pages.
+  * **Automated Overtime:** The system automatically flags workers exceeding standard hours and dynamically calculates their bonus pay at a 1.5x premium rate.
+  * **Live Search:** Fully asynchronous, real-time search filtering that maintains active tax calculations without dropping data.
 
-### 🏗️ Architecture: Blazor Server
+### 5\. 🖩 Standalone Tax Calculator
 
-* **Interactive Mode:** Uses `@rendermode InteractiveServer` for a seamless, JavaScript-free experience.
-* **Dependency Injection:** Implements a Singleton `WorkerService` to manage application state across different components.
-* **SPA Routing:** Client-side navigation without page reloads using the `NavigationManager`.
+A dedicated sandbox environment within the app where administrators can input hypothetical basic salaries to instantly preview the exact tax breakdown and Net Pay without altering actual employee database records.
 
----
+### 6\. 📊 Interactive Dashboard
 
-## 🛠️ Technical Implementation
+A dynamic home screen providing a high-level overview of company payroll health. It features animated statistical counters that calculate Total Headcount, Active Overtime Workers, and Total Company Payout in real-time on page load.
 
-The system demonstrates core **.NET Enterprise patterns** applied to a web context.
+## 🎨 UI / UX Design Philosophy
 
-* **Data Model:**
-```csharp
-// Encapsulated logic ensures data consistency
-public double totalSalary => hourlyPay * hoursWorked;
+The frontend is built entirely from scratch without relying on heavy external CSS frameworks like Bootstrap for the core layouts.
 
-```
+  * **Zero Inline Styling:** All components utilize a strictly maintained, global `app.css` stylesheet for absolute separation of structure and design.
+  * **Responsive Layout:** Features a collapsible sidebar navigation and flexbox/grid-driven layouts that adapt to both desktop and mobile screens.
+  * **Modern Aesthetics:** Utilizes soft gradient backgrounds, subtle box-shadows, glass-morphism effects on profile cards, and clean transition animations for interactive elements.
 
+## 👨‍💻 Developer
 
-* **Service Layer:**
-* `WorkerService.cs` acts as the single source of truth.
-* Uses **LINQ** for querying (`FirstOrDefault`) and list manipulation.
+Designed and developed by **Ian Obino**.
 
-
-* **UI Components:**
-* **Razor Syntax:** Mixes HTML and C# for dynamic rendering.
-* **Event Handling:** `@onclick` delegates for CRUD actions.
-
-
----
-
-## 👨‍💻 Author
-
-**Ian Nyamosi**
-
-* **Role:** .NET Developer
-* LinkedIn Profile(https://www.google.com/search?q=https://linkedin.com/in/ian-nyamosi)
-
-* Portfolio(https://www.google.com/search?q=https://github.com/nyam0s1)
-
----
-
-*Built with .NET 8 and Blazor Server.*
+  * **Email:** nyamosiobino@gmail.com
+  * **Portfolio:** [nyam0s1.github.io](https://nyam0s1.github.io/)
