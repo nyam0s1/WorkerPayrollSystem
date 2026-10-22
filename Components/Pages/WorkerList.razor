@@ -28,24 +28,28 @@
     <div class="main-content">
         <h1>Employees Details</h1>
 
+        <div class="search-box">
+            <input type="text"
+                   aria-label="Search employees by name"
+                   placeholder="🔍 Search by name"
+                   @bind="searchText"
+                   @bind:event="oninput"
+                   @bind:after="PerformSearch">
+        </div>
+
         @if (myEmployees.Count == 0)
         {
             <div class="card">
-                <h3>No Workers in the system</h3>
-                <p>Click <NavLink href="add">here</NavLink> to add workers to the system.</p>
+                <h3>@(string.IsNullOrWhiteSpace(searchText) ? "No Workers in the system" : "No employees match your search")</h3>
+                @if (string.IsNullOrWhiteSpace(searchText))
+                {
+                    <p>Click <NavLink href="add">here</NavLink> to add workers to the system.</p>
+                }
             </div>
         }
         else
         {
             <div class="table">
-                <div class="search-box">
-                    <input type="text"
-                           placeholder="🔍 Search by name"
-                           @bind="searchText"
-                           @bind:event="oninput"
-                           @bind:after="PerformSearch">
-                </div>
-
                 <table>
                     <thead>
                         <tr>
@@ -71,7 +75,7 @@
                                     @w.overTimeHours
                                 </td>
 
-                                <td>@w.totalSalary.ToString("N2")</td>
+                                <td>@(w.CurrentPayslip?.GrossPay.ToString("N2") ?? "0.00")</td>
 
                                 <td class="text-success fw-bold">
                                     @(w.CurrentPayslip != null ? w.CurrentPayslip.NetPay.ToString("N2") : "0.00")
@@ -111,11 +115,11 @@
                                                             <td class="drawer-td text-right text-danger">-@w.CurrentPayslip.PayeAmount.ToString("N2") KES</td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="drawer-td text-danger">SHA (2.75%)</td>
+                                                            <td class="drawer-td text-danger">SHA</td>
                                                             <td class="drawer-td text-right text-danger">-@w.CurrentPayslip.ShaAmount.ToString("N2") KES</td>
                                                         </tr>
                                                         <tr>
-                                                            <td class="drawer-td text-danger">Housing Levy (1.5%)</td>
+                                                            <td class="drawer-td text-danger">Housing Levy</td>
                                                             <td class="drawer-td text-right text-danger">-@w.CurrentPayslip.HousingLevyAmount.ToString("N2") KES</td>
                                                         </tr>
 
@@ -147,6 +151,7 @@
     bool sidebarVisible = true;
     string searchText = "";
     List<Employee> myEmployees = new List<Employee>();
+    int searchVersion;
 
     // Keeps track of which specific table rows are currently expanded
     HashSet<Guid> expandedRows = new HashSet<Guid>();
@@ -169,7 +174,10 @@
     // Updated to async so the search results pass through the tax engine
     async Task PerformSearch()
     {
-        myEmployees = await Service.SearchEmployeesWithCalculatedPayAsync(searchText);
+        var requestVersion = ++searchVersion;
+        var results = await Service.SearchEmployeesWithCalculatedPayAsync(searchText);
+        if (requestVersion == searchVersion)
+            myEmployees = results;
     }
 
     async Task DeleteEmployee(Employee employee)
@@ -182,7 +190,7 @@
 
         Service.DeleteEmployee(employee);
 
-        // Updated to the async calculation method so the table refreshes correctly
-        myEmployees = await Service.GetAllEmployeesWithCalculatedPayAsync();
+        expandedRows.Remove(employee.Id);
+        await PerformSearch();
     }
 }

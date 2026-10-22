@@ -6,10 +6,18 @@
 @inject Blazor_Training.Application.EmployeeService Service
 
 @* If the data hasn't loaded yet, show a fallback message *@
-@if (employee == null || employee.CurrentPayslip == null)
+@if (isLoading)
 {
     <div class="main-content">
         <h3>Loading official document...</h3>
+    </div>
+}
+else if (employee == null || employee.CurrentPayslip == null)
+{
+    <div class="main-content">
+        <h3>Employee not found</h3>
+        <p>This employee may have been removed.</p>
+        <a href="employees" class="btn btn-blue">Back to Employees</a>
     </div>
 }
 else
@@ -27,8 +35,8 @@ else
                 <strong>Employee ID:</strong> @employee.Id.ToString().Substring(0, 8).ToUpper()
             </div>
             <div class="text-right">
-                <strong>Pay Period:</strong> @DateTime.Now.ToString("MMMM yyyy")<br />
-                <strong>Date Printed:</strong> @DateTime.Now.ToString("dd MMM yyyy")
+                <strong>Pay Period:</strong> @printedAt.ToString("MMMM yyyy")<br />
+                <strong>Date Printed:</strong> @printedAt.ToString("dd MMM yyyy")
             </div>
         </div>
 
@@ -57,12 +65,12 @@ else
                     <td class="text-right text-danger">-@employee.CurrentPayslip.PayeAmount.ToString("N2")</td>
                 </tr>
                 <tr>
-                    <td>SHA Deduction (2.75%)</td>
+                    <td>SHA Deduction</td>
                     <td></td>
                     <td class="text-right text-danger">-@employee.CurrentPayslip.ShaAmount.ToString("N2")</td>
                 </tr>
                 <tr>
-                    <td>Housing Levy (1.5%)</td>
+                    <td>Housing Levy</td>
                     <td></td>
                     <td class="text-right text-danger">-@employee.CurrentPayslip.HousingLevyAmount.ToString("N2")</td>
                 </tr>
@@ -88,13 +96,14 @@ else
     public Guid Id { get; set; }
 
     private Employee? employee;
+    private bool isLoading = true;
+    private DateTimeOffset printedAt;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        // 1. Fetch everyone with their taxes calculated
-        var allEmployees = await Service.GetAllEmployeesWithCalculatedPayAsync();
-
-        // 2. Find the exact employee who matches the ID in the URL
-        employee = allEmployees.FirstOrDefault(e => e.Id == Id);
+        isLoading = true;
+        employee = await Service.GetEmployeeWithCalculatedPayAsync(Id);
+        printedAt = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(3));
+        isLoading = false;
     }
 }

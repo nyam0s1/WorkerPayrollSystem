@@ -22,22 +22,23 @@
 
 	<div class="main-content">
 		<h1>Overtime Workers Details</h1>
+		<div class="search-box">
+			<input type="text"
+				   aria-label="Search overtime workers by name"
+				   placeholder="🔍 Search by name"
+				   @bind="searchText"
+				   @bind:event="oninput"
+				   @bind:after="PerformSearch">
+		</div>
 		@if (overtimeEmployees.Count == 0)
 		{
 			<div class="card">
-				<h3>No Overtime Detected</h3>
+				<h3>@(string.IsNullOrWhiteSpace(searchText) ? "No Overtime Detected" : "No overtime workers match your search")</h3>
 			</div>
 		}
 		else
 		{
 			<div class="table">
-				<div class="search-box">
-					<input type="text"
-						   placeholder="🔍 Search by name"
-						   @bind="searchText"
-						   @bind:event="oninput"
-						   @bind:after="PerformSearch">
-				</div>
 				<table>
 					<thead>
 						<tr>
@@ -78,16 +79,13 @@
 
 	protected override void OnInitialized()
 	{
-		// 1. Get everyone
-		var allEmployees = Service.GetAllEmployees();
-
-		// 2. Filter: Keep ONLY people with Overtime > 0
-		overtimeEmployees = allEmployees.Where(w => w.overTimeHours > 0).ToList();
+		PerformSearch();
 	}
 
 	void PerformSearch()
 	{
-		overtimeEmployees = Service.SearchEmployees(searchText);
+		overtimeEmployees = Service.SearchEmployees(searchText)
+			.Where(w => w.overTimeHours > 0).ToList();
 	}
 
 	async Task DeleteEmployee(Employee employee)

@@ -17,5 +17,24 @@ namespace Blazor_Training.Infrastructure
         public DbSet<Employee> Employees { get; set; }
         public DbSet<Payslip> Payslips { get; set; }
         public DbSet<StatutoryConfig> StatutoryConfigs { get; set; }
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            // Store money at cents precision throughout the payroll model.
+            configurationBuilder.Properties<decimal>().HavePrecision(18, 2);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Rates are fractions: decimal(18,2) rounds 0.0275 and 0.015
+            // to different rates. Preserve at least six decimal places.
+            var statutoryConfig = modelBuilder.Entity<StatutoryConfig>();
+            statutoryConfig.Property(config => config.PayeRate).HasPrecision(18, 6);
+            statutoryConfig.Property(config => config.ShaRate).HasPrecision(18, 6);
+            statutoryConfig.Property(config => config.NssfLowerRate).HasPrecision(18, 6);
+            statutoryConfig.Property(config => config.HousingLevy).HasPrecision(18, 6);
+        }
     }
 }

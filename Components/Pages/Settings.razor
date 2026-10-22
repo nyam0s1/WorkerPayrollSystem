@@ -11,7 +11,7 @@
 <nav class="navbar">
     <div class="logo">PayRoll System</div>
     <div class="nav-links">
-        <NavLink href="" MatchMatch="NavLinkMatch.All">Home</NavLink>
+        <NavLink href="" Match="NavLinkMatch.All">Home</NavLink>
         <NavLink href="About">About</NavLink>
     </div>
 </nav>
@@ -30,6 +30,10 @@
         <h1>Statutory Tax Settings</h1>
 
         <p class="page-subtitle">Manage the active KRA, NSSF, and SHA rates used by the calculation engine.</p>
+        @if (saveError != null)
+        {
+            <p class="text-danger" role="alert">@saveError</p>
+        }
 
         <div class="table settings-table">
 
@@ -55,7 +59,7 @@
                                 @* If in edit mode, show an input box bound to the config value *@
                                 @if (isEditing)
                                 {
-                                    <input type="number" @bind="config.PersonalRelief" class="search-box input-small text-center" />
+                                    <input type="number" min="0" step="0.01" aria-label="Personal relief in KES" @bind="config.PersonalRelief" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
@@ -66,22 +70,22 @@
                             <td rowspan="4" class="actions-cell">
                                 @if (isEditing)
                                 {
-                                    <button class="btn btn-success btn-block mb-10" @onclick="SaveChanges">💾 Save</button>
-                                    <button class="btn btn-pink btn-block" @onclick="CancelEdit">❌ Cancel</button>
+                                    <button type="button" class="btn btn-success btn-block mb-10" disabled="@isSaving" @onclick="SaveChanges">💾 Save</button>
+                                    <button type="button" class="btn btn-pink btn-block" disabled="@isSaving" @onclick="CancelEdit">❌ Cancel</button>
                                 }
                                 else
                                 {
-                                    <button class="btn btn-blue" @onclick="StartEditing">✏️ Edit Rates</button>
+                                    <button type="button" class="btn btn-blue" @onclick="StartEditing">✏️ Edit Rates</button>
                                 }
                             </td>
                         </tr>
 
                         <tr>
-                            <td><strong>NSSF Upper Limit (KES)</strong></td>
+                            <td><strong>NSSF Employee Contribution Cap (KES)</strong></td>
                             <td class="text-center">
                                 @if (isEditing)
                                 {
-                                    <input type="number" @bind="config.NssfUpperLimit" class="search-box input-small text-center" />
+                                    <input type="number" min="0" step="0.01" aria-label="NSSF employee contribution cap in KES" @bind="config.NssfUpperLimit" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
@@ -95,7 +99,7 @@
                             <td class="text-center">
                                 @if (isEditing)
                                 {
-                                    <input type="number" step="0.0001" @bind="config.ShaRate" class="search-box input-small text-center" />
+                                    <input type="number" min="0" max="1" step="0.0001" aria-label="SHA rate as a decimal" @bind="config.ShaRate" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
@@ -109,7 +113,7 @@
                             <td class="text-center">
                                 @if (isEditing)
                                 {
-                                    <input type="number" step="0.001" @bind="config.HousingLevy" class="search-box input-small text-center" />
+                                    <input type="number" min="0" max="1" step="0.0001" aria-label="Housing levy rate as a decimal" @bind="config.HousingLevy" class="search-box input-small text-center" />
                                 }
                                 else
                                 {
@@ -132,6 +136,8 @@
 
     // Holds the active tax rules fetched from the database
     StatutoryConfig? config;
+    string? saveError;
+    bool isSaving;
 
     /// <summary>
     /// Runs automatically when the page loads to fetch the current tax rules
@@ -146,6 +152,7 @@
     /// </summary>
     private void StartEditing()
     {
+        saveError = null;
         isEditing = true;
     }
 
@@ -155,6 +162,7 @@
     private async Task CancelEdit()
     {
         config = await SettingsService.GetCurrentConfigAsync();
+        saveError = null;
         isEditing = false;
     }
 
@@ -163,7 +171,27 @@
     /// </summary>
     private async Task SaveChanges()
     {
-        await SettingsService.SaveConfigAsync(config);
-        isEditing = false;
+        if (config == null || isSaving)
+            return;
+
+        isSaving = true;
+        saveError = null;
+        try
+        {
+            await SettingsService.SaveConfigAsync(config);
+            isEditing = false;
+        }
+        catch (ArgumentException exception)
+        {
+            saveError = exception.Message;
+        }
+        catch (InvalidOperationException exception)
+        {
+            saveError = exception.Message;
+        }
+        finally
+        {
+            isSaving = false;
+        }
     }
 }

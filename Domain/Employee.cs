@@ -49,11 +49,9 @@ namespace Blazor_Training.Domain
         // 3. EXISTING HOURLY WAGE LOGIC
         // ==========================================
 
-        [Required(ErrorMessage = "Hourly Pay is required!")]
         [Range(0, 1000001, ErrorMessage = "Pay should be between 0 and 1,000,000")]
         public double? hourlyPay { get; set; }
 
-        [Required(ErrorMessage = "Hours Worked are required!")]
         [Range(0, 120, ErrorMessage = "Hours worked should be between 0 and 120")]
         public int? hoursWorked { get; set; }
 

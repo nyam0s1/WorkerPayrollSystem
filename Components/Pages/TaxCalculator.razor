@@ -3,9 +3,11 @@
 @* Imports for our domain models and payroll logic interfaces *@
 @using Blazor_Training.Domain
 @using Blazor_Training.Application
+@using System.ComponentModel.DataAnnotations
 
 @* Inject the standalone tax calculation engine *@
 @inject IPayrollCalculatorService PayrollService
+@inject SettingsService SettingsService
 
 <nav class="navbar">
     <div class="logo">PayRoll System</div>
@@ -33,18 +35,23 @@
 
         <div class="table">
 
-            <div class="calc-input-group">
+            <EditForm Model="calculatorInput" OnValidSubmit="CalculateTax">
+                <DataAnnotationsValidator />
+                <div class="calc-input-group">
 
-                <input type="number"
+                <InputNumber
                        class="form-control calc-input"
+                       aria-label="Monthly basic salary in KES"
                        placeholder="Enter Basic Salary (KES)..."
-                       @bind="inputSalary" />
+                       @bind-Value="calculatorInput.Salary" />
 
-                <button class="btn btn-blue calc-btn" @onclick="CalculateTax">Calculate</button>
-            </div>
+                <button type="submit" class="btn btn-blue calc-btn" disabled="@isCalculating">Calculate</button>
+                </div>
+                <ValidationSummary />
+            </EditForm>
 
             @* Only show the breakdown table IF the user has clicked Calculate *@
-            @if (generatedSlip != null)
+            @if (generatedSlip != null && currentLaw != null)
             {
                 <table>
                     <thead>
@@ -67,15 +74,15 @@
                             <td class="text-right">@generatedSlip.TaxablePay.ToString("N2")</td>
                         </tr>
                         <tr>
-                            <td class="text-danger">PAYE (After KES 2,400 Relief)</td>
+                            <td class="text-danger">PAYE (After KES @currentLaw.PersonalRelief.ToString("N2") Relief)</td>
                             <td class="text-right text-danger">- @generatedSlip.PayeAmount.ToString("N2")</td>
                         </tr>
                         <tr>
-                            <td class="text-danger">SHA Deduction (2.75%)</td>
+                            <td class="text-danger">SHA Deduction (@((currentLaw.ShaRate * 100).ToString("0.####"))%, minimum KES 300 for positive pay)</td>
                             <td class="text-right text-danger">- @generatedSlip.ShaAmount.ToString("N2")</td>
                         </tr>
                         <tr>
-                            <td class="text-danger">Housing Levy (1.5%)</td>
+                            <td class="text-danger">Housing Levy (@((currentLaw.HousingLevy * 100).ToString("0.####"))%)</td>
                             <td class="text-right text-danger">- @generatedSlip.HousingLevyAmount.ToString("N2")</td>
                         </tr>
 
@@ -93,37 +100,47 @@
 @code {
     bool sidebarVisible = true;
 
-    // Binds directly to the HTML input box above
-    decimal? inputSalary;
+    private CalculationInput calculatorInput = new();
+    private bool isCalculating;
 
     // Holds the final math results. Starts null so the table remains hidden initially.
     Payslip? generatedSlip;
 
-    // Hardcoded KRA statutory limits for the standalone calculator
-    private StatutoryConfig currentLaw = new StatutoryConfig
+    private StatutoryConfig? currentLaw;
+
+    private sealed class CalculationInput
     {
-        PersonalRelief = 2400m,
-        NssfUpperLimit = 18000m,
-        ShaRate = 0.0275m,
-        HousingLevy = 0.015m
-    };
+        [Required(ErrorMessage = "Enter a monthly basic salary.")]
+        [Range(typeof(decimal), "0", "1000000000", ErrorMessage = "Enter a salary between 0 and 1,000,000,000 KES.")]
+        public decimal? Salary { get; set; }
+    }
 
     /// <summary>
     /// Triggers when the 'Calculate' button is clicked.
     /// Creates a dummy employee and passes it to the calculation engine.
     /// </summary>
-    private void CalculateTax()
+    private async Task CalculateTax()
     {
-        // 1. Create a temporary 'dummy' employee just for the math engine
-        var dummyEmployee = new Employee
-        {
-            BasicSalary = inputSalary ?? 0,
-            HouseAllowance = 0,
-            TransportAllowance = 0,
-            HasDisability = false
-        };
+        if (isCalculating)
+            return;
 
-        // 2. Fire the engine and store the result in 'generatedSlip' so the UI updates
-        generatedSlip = PayrollService.GeneratePayslip(dummyEmployee, currentLaw);
+        isCalculating = true;
+        try
+        {
+            currentLaw = await SettingsService.GetCurrentConfigAsync();
+            var dummyEmployee = new Employee
+            {
+                BasicSalary = calculatorInput.Salary ?? 0,
+                HouseAllowance = 0,
+                TransportAllowance = 0,
+                HasDisability = false
+            };
+
+            generatedSlip = PayrollService.GeneratePayslip(dummyEmployee, currentLaw);
+        }
+        finally
+        {
+            isCalculating = false;
+        }
     }
 }

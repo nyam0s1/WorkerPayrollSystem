@@ -14,34 +14,41 @@ public class PayrollCalculatorService : IPayrollCalculatorService
 
         slip.EmployeeId = employee.Id;
 
-        slip.BasicSalary = employee.BasicSalary;
-        slip.HouseAllowance = employee.HouseAllowance;
-        slip.TransportAllowance = employee.TransportAllowance;
+        slip.BasicSalary = RoundMoney(employee.BasicSalary);
+        slip.HouseAllowance = RoundMoney(employee.HouseAllowance);
+        slip.TransportAllowance = RoundMoney(employee.TransportAllowance);
 
         slip.GrossPay = slip.BasicSalary + slip.HouseAllowance + slip.TransportAllowance;
 
-        decimal Nssfamount = slip.GrossPay * 0.06m;
-        if (Nssfamount > config.NssfUpperLimit)
-        {
-            slip.NssfAmount = config.NssfUpperLimit;
-        }
-        else
-        {
-            slip.NssfAmount = Nssfamount;
-        }
+        // NssfUpperLimit stores the employee contribution cap in KES.
+        slip.NssfAmount = RoundMoney(Math.Min(slip.GrossPay * 0.06m, config.NssfUpperLimit));
 
-        slip.TaxablePay = slip.GrossPay - slip.NssfAmount;
+        // The minimum applies to a paid month. A blank/zero calculator input
+        // does not represent a paid employee and produces no deductions.
+        slip.ShaAmount = slip.GrossPay > 0m
+            ? RoundMoney(Math.Max(300m, slip.GrossPay * config.ShaRate))
+            : 0m;
 
-        slip.PayeAmount = CalculatePaye(slip.TaxablePay, config.PersonalRelief);
+        slip.HousingLevyAmount = RoundMoney(slip.GrossPay * config.HousingLevy);
 
-        slip.ShaAmount = slip.GrossPay * config.ShaRate;
+        // Employee SHIF and Affordable Housing Levy contributions are allowable
+        // deductions when determining taxable employment income (December 2024 onward).
+        slip.TaxablePay = Math.Max(0m,
+            slip.GrossPay - slip.NssfAmount - slip.ShaAmount - slip.HousingLevyAmount);
 
-        slip.HousingLevyAmount = slip.GrossPay * config.HousingLevy;
+        slip.PersonalRelief = RoundMoney(config.PersonalRelief);
+        slip.PayeAmount = RoundMoney(CalculatePaye(slip.TaxablePay, slip.PersonalRelief));
 
-        slip.NetPay = slip.TaxablePay - (slip.PayeAmount + slip.ShaAmount + slip.HousingLevyAmount);
+        // Taxable pay already includes the allowable deductions. Start from
+        // gross pay so every deduction is taken exactly once.
+        slip.NetPay = slip.GrossPay - slip.NssfAmount - slip.ShaAmount
+            - slip.HousingLevyAmount - slip.PayeAmount;
 
         return slip;
     }
+
+    private static decimal RoundMoney(decimal amount) =>
+        decimal.Round(amount, 2, MidpointRounding.AwayFromZero);
 
     private decimal CalculatePaye(decimal taxablePay, decimal personalRelief)
     {

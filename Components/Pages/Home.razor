@@ -65,7 +65,7 @@
 	bool sidebarVisible = false;
 
 	int displayCount = 0;
-	double displaySalary = 0;
+	decimal displaySalary = 0;
 	int displayOvertime = 0;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -78,14 +78,14 @@
 
 	async Task AnimateNumbers()
 	{
-		var allEmployees = Service.GetAllEmployees();
+		var allEmployees = await Service.GetAllEmployeesWithCalculatedPayAsync();
 		int finalCount = allEmployees.Count;
-		double finalSalary = allEmployees.Sum(w => w.NetSalary);
+		decimal finalSalary = allEmployees.Sum(w => w.CurrentPayslip?.NetPay ?? 0m);
 		int finalOvertime = allEmployees.Count(w => w.overTimeHours > 0);
 
 		for (int i = 0; i <= 50; i++)
 		{
-			double percentage = i / 50.0;
+			decimal percentage = i / 50m;
 
 			displayCount = (int)(finalCount * percentage);
 			displaySalary = finalSalary * percentage;

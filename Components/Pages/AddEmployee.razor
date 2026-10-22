@@ -24,25 +24,37 @@
 	</nav>
 
 	<div class="InputForm">
-		<h1>New Employee</h1>
-		<EditForm Model="newEmployee" OnValidSubmit="SaveEmployee">
-			<DataAnnotationsValidator />
-			<ValidationSummary />
-		<div>
-			<label>Name</label><br />
-			<InputText placeholder="Enter Employee name" @bind-Value="newEmployee.Name" class="form-control"/>
-		</div>
-		<div>
-			<label>Rate of Pay per Hour</label><br />
-			<InputNumber placeholder="Enter Employee payrate" @bind-Value ="newEmployee.hourlyPay" class="form-control" />
-		</div>
-		<div>
-			<label>Number of Hours Worked</label><br />
-			<InputNumber placeholder="Enter Worked Hours" @bind-Value="newEmployee.hoursWorked" class="form-control"/>
-		</div>
-		<button class="btn btn-blue" >Submit</button>
-		<button class="btn btn-red" @onclick="Cancel">Cancel</button>
-		</EditForm>
+		<h1>@(isEditMode ? "Edit Employee" : "New Employee")</h1>
+		@if (employeeNotFound)
+		{
+			<p>Employee not found. They may have been removed.</p>
+			<NavLink class="btn btn-blue" href="employees">Back to Employees</NavLink>
+		}
+		else
+		{
+			<EditForm Model="newEmployee" OnValidSubmit="SaveEmployee">
+				<DataAnnotationsValidator />
+				<ValidationSummary />
+				@if (formError != null)
+				{
+					<p class="text-danger" role="alert">@formError</p>
+				}
+				<div>
+					<label for="employee-name">Name</label><br />
+					<InputText id="employee-name" placeholder="Enter Employee name" @bind-Value="newEmployee.Name" class="form-control" />
+				</div>
+				<div>
+					<label for="employee-rate">Rate of Pay per Hour</label><br />
+					<InputNumber id="employee-rate" placeholder="Enter Employee payrate" @bind-Value="newEmployee.hourlyPay" class="form-control" />
+				</div>
+				<div>
+					<label for="employee-hours">Number of Hours Worked</label><br />
+					<InputNumber id="employee-hours" placeholder="Enter Worked Hours" @bind-Value="newEmployee.hoursWorked" class="form-control" />
+				</div>
+				<button type="submit" class="btn btn-blue">Submit</button>
+				<button type="button" class="btn btn-red" @onclick="Cancel">Cancel</button>
+			</EditForm>
+		}
 	</div>
 </div>
 
@@ -52,24 +64,47 @@
 	[Parameter]
 	public Guid Id { get; set; }
 	Employee newEmployee = new Employee();
-	protected override void OnInitialized()
+	bool employeeNotFound;
+	bool isEditMode;
+	string? formError;
+	protected override void OnParametersSet()
 	{
-		if (Id != Guid.Empty)
+		formError = null;
+		employeeNotFound = false;
+		isEditMode = NavManager.ToBaseRelativePath(NavManager.Uri).StartsWith("edit/", StringComparison.OrdinalIgnoreCase);
+		if (!isEditMode)
+			Id = Guid.Empty;
+
+		if (isEditMode)
 		{
 			var foundEmployee = Service.GetEmployee(Id);
-
-			newEmployee = foundEmployee;
+			employeeNotFound = foundEmployee == null;
+			newEmployee = foundEmployee ?? new Employee();
 		}
+		else
+			newEmployee = new Employee();
 	}
 	void SaveEmployee()
 	{
-		if (Id == Guid.Empty)
+		if (employeeNotFound)
+			return;
+		if (!newEmployee.hourlyPay.HasValue || !newEmployee.hoursWorked.HasValue)
+		{
+			formError = "Enter both the hourly rate and hours worked.";
+			return;
+		}
+
+		if (!isEditMode)
 		{
 			Service.AddEmployee(newEmployee);
 		}
 		else
 		{
-			Service.UpdateEmployee(newEmployee);
+			if (!Service.UpdateEmployee(newEmployee))
+			{
+				employeeNotFound = true;
+				return;
+			}
 		}
 		NavManager.NavigateTo("/employees");
 	}

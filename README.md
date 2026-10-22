@@ -58,3 +58,13 @@ Designed and developed by **Ian Obino**.
 
   * **Email:** nyamosiobino@gmail.com
   * **Portfolio:** [nyam0s1.github.io](https://nyam0s1.github.io/)
+
+## Verification
+
+With the .NET 10 SDK installed, run the payroll checks from the repository folder:
+
+```sh
+dotnet run --project tests/PayrollSystem.Checks/PayrollSystem.Checks.csproj -c Release
+```
+
+The checks cover standard monthly payroll deductions, PAYE band boundaries, the default NSSF contribution cap, overtime, rounding and zero pay. They run without a database and exit with a nonzero status if a check fails. Database, browser and access control checks are separate; these checks do not certify every tax circumstance.

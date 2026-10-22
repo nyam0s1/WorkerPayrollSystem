@@ -11,7 +11,7 @@ builder.Services.AddRazorComponents()
 
 // 1. Add the Database Context
 // This reads the "DefaultConnection" string from appsettings.json
-builder.Services.AddDbContext<AppDbContext>(options =>
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // 2. Add the Service (Scoped)
